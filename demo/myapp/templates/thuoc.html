@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}List Patient{% endblock %}
+{% block content %}
+
+{% if thuocs %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên thuốc</th>
+            <th>Giá theo viên</th>
+            <th>Giá theo chai</th>
+            <th>Số viên còn</th>
+            <th>Số chai còn</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for thuoc in thuocs %}
+        <tr>
+            <td>{{ thuoc.id }}</td>
+            <td>{{ thuoc.giatheovien }}</td>
+            <td>{{ thuoc.giatheochai }}</td>
+            <td>{{ thuoc.soviencon }}</td>
+            <td>{{ thuoc.sochaicon }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h1>Chưa có thuốc</h1>
+{% endif %}
+
+
+{% endblock %}

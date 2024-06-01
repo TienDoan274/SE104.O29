@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{%block title%}List Patient{%endblock%}
+{% block content %}
+<form id="searchForm">
+  <input type="text" id="searchInput" placeholder="Enter ID or Name">
+  <button type="submit">Search</button>
+</form>
+
+{% for patient in patients %}
+
+<table class="table table-striped table-hover table-bordered">
+  <thead class="table-light">
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Name</th>
+      <th scope="col">Date</th>
+      <th scope="col">pred</th>
+      <th scope="col">Sympton</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <a href="{% url 'add_bill' patient.id %}" class="btn btn-primary">Add bill</a>
+
+      <td>{{ patient.id }}</a></td>
+      <td>{{ patient.name }}</td>
+      <td>{{ patient.date }}</td>
+
+      {% for report in reports%}
+      {% if report.name == patient.name and report.date == patient.date%}
+
+      
+      <td>{{ report.pred }}</td>
+      <td>{{ report.symptoms }}</td> 
+      {%endif%}
+      {%endfor%}
+    </tr>
+  </tbody>
+</table>
+{%endfor%}  
+{%endblock%}

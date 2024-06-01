@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<h1>Danh sách khám bệnh  </h1>
+<h4>Ngày khám : {{ngaykhamstr}}</h2>
+<a href="{% url 'themBN' ngaykhamstr %}" class="btn btn-primary" role="button">Thêm bệnh nhân</a>
+
+{% if benhnhans %}
+  <table class="table table-striped table-hover table-bordered table-light">
+    <thead>
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col">Họ Tên</th>
+        <th scope="col">Giới tính</th>
+        <th scope="col">Năm sinh</th>
+        <th scope="col">Địa chỉ</th>
+        <th scope="col">Lập phiếu khám bệnh</th>
+        <th scope="col">Lập hóa đơn</th>
+      </tr>
+    </thead>
+    {% for benhnhan in benhnhans %}
+
+    <tbody>
+      <tr>
+        <td>{{ benhnhan.id }}</td>
+        <td>{{ benhnhan.hoten }}</td>
+        <td>{{ benhnhan.gioitinh }}</td>
+        <td>{{ benhnhan.namsinh }}</td>
+        <td>{{ benhnhan.diachi }}</td>
+        <td><a href="{% url 'phieukb' benhnhan.id %}" class="btn btn-primary">Vào</a></td>
+        <td><a href="{% url 'hoadon' benhnhan.id %}" class="btn btn-primary">Vào</a></td>
+
+      </tr>
+    </tbody>
+    {% endfor %}
+
+  </table>
+{% endif %}
+<a href="{% url 'chonNgaydskb' %}" class="btn btn-primary" role="button">Back</a>
+
+{% endblock %}

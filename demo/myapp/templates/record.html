@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Patient Record{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <strong>
+            {% if med_examinations %}
+                {{ med_examinations.first.patientlist.patient.name }}
+            {% else %}
+                No Records Found
+            {% endif %}
+        </strong>
+    </div>
+    <div class="card-body">
+        {% if med_examinations %}
+            {% for med_examination in med_examinations %}
+                <div class="examination-record">
+                    <p class="card-text"><strong>Date: </strong>{{ med_examination.patientlist.date }}</p>
+                    <p class="card-text"><strong>Symptoms: </strong>{{ med_examination.symptoms }}</p>
+                    <p class="card-text"><strong>Disease Prediction: </strong>{{ med_examination.get_disease_prediction_display }}</p>
+                    <p class="card-text"><strong>Medication: </strong>{{ med_examination.med.medication_name }}</p>
+                    <p class="card-text"><strong>Amount: </strong>{{ med_examination.num_med }}</p>
+                    <hr>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No medical examinations found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<br/><br/>
+<a href="{% url 'update_record' pk %}" class="btn btn-primary">Add Examination</a>
+<a href="{% url 'dsKhambenh' %}" class="btn btn-secondary">Back</a>
+{% endblock %}

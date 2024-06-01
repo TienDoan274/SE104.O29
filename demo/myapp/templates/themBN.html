@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{%block title%}Add Record Page{%endblock%}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <h1>Thêm bệnh nhân</h1>
+    <br>
+    <form id ='themBN' method = "POST" action="{% url 'themBN' ngaykhamstr %}">
+        {% csrf_token %}
+        {{form.as_p}}
+
+        <button type="submit" class="btn btn btn-success">Thêm</button>
+        <a href="{% url 'dsKhambenh' ngaykhamstr %}" class="btn btn-secondary">Back</a>
+    </form>
+    
+</div>
+{%endblock%}

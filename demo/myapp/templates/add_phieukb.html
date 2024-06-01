@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{%block title%}Add Medical Report Page{%endblock%}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <h1>Tạo phiếu khám bệnh</h1>
+    <br>
+    <form method = "POST" >
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn btn-success">Add Report</button>
+        <a href="{% url 'phieukb' id %}" class="btn btn-secondary">Back</a>
+    </form>
+    {% comment %} <form method = "POST" >
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn btn-success">Add Report</button>
+        <a href="{% url 'phieukb' id %}" class="btn btn-secondary">Back</a>
+    </form> {% endcomment %}
+</div>
+{%endblock%}

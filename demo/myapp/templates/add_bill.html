@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{%block title%}Bills{%endblock%}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <h1>Add bill</h1>
+    <br>
+    <form method = "POST" action="{% url 'add_bill' pk %}">
+        {% csrf_token %}
+        {{form.as_p}}
+
+        
+        <button type="submit" class="btn btn btn-success">Add bill</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+    </form>
+
+</div>
+{%endblock%}

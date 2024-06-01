@@ -1,0 +1,121 @@
+{% extends "base.html" %}{%block title%}Home Page{%endblock%}
+{%block content%}
+
+    {% if user.is_authenticated %}
+    <div class="introduction">
+      <img
+        src="https://media.istockphoto.com/id/1364075546/photo/empty-corridor-in-modern-hospital-with-information-counter-and-hospital-bed-in-rooms-3d.jpg?s=612x612&w=0&k=20&c=xxFDmIVpH1wJaaiorpvfzec4RRggSb48PDb_dU9bTjo="
+        alt="Hospital main room">
+      <div class="introduction-text">
+        Welcome to the most cutting-edge Clinic in the world.
+      </div>
+    </div>
+    <div class="cards">
+      <div class="get-care">
+        <img
+          src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/call-to-action/icon-appointments-dark-blue.svg"
+          alt="Getting an appointment at ClevACeland Clinic is easy. Schedule using any of these convenient options.">
+        <div class="card-title" id="card1">Get Care</div>
+        <div class="card-des" id="card1">Getting an appointment at Clinic is easy. Schedule using any of these convenient
+          options.</div>
+      </div>
+      <div class="live-healthier">
+        <img
+          src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/call-to-action/icon-stay-healthy-light-blue.svg"
+          alt="Find health and wellness information to help you and your family live a bit healthier each day.">
+        <div class="card-title" id="card2">Live Healthier</div>
+        <div class="card-des" id="card2">Find health and wellness information to help you and your family live a bit
+          healthier each
+          day.</div>
+      </div>
+      <div class="need-help">
+        <img
+          src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/call-to-action/icon-need-help-green.svg"
+          alt="Have a question? We want to make it easy to find what you're looking for. Get answers online fast.">
+        <div class="card-title" id="card3">Need Help?</div>
+        <div class="card-des" id="card3">Have a question? We want to make it easy to find what you're looking for. Get
+          answers online fast.</div>
+      </div>
+    </div>
+    <div class="why">
+      <div class="why-title">Why choose us?</div>
+      <div class="why-cards">
+        <div class="patient-centered">
+          <div class="img-container"><img
+            src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/spotlight-panel/patient-centered-care.svg"
+            alt="patient centered care icon">
+          </div>
+          <div class="why-card-title">Patient-centered care:</div>
+          <div class="why-card-des">
+            We don't just care for your health conditions. We care about you. That means our providers take the time to
+            listen to what's important to you before recommending next steps.
+          </div>
+        </div>
+        <div class="national">
+          <div class="img-container"><img
+            src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/spotlight-panel/national-recognition.svg"
+            alt="patient centered care icon">
+          </div>
+          <div class="why-card-title">National recognition:</div>
+          <div class="why-card-des">
+            We are recognized in Vietnam and throughout the world for its expertise and care.
+          </div>
+        </div>
+        <div class="collaborative">
+          <div class="img-container"><img
+            src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/spotlight-panel/skilled-collaborative-providers.svg"
+            alt="patient centered care icon"></div>
+          <div class="why-card-title">Collaborative providers:</div>
+          <div class="why-card-des">
+            You'll get care from board-certified and fellowship trained experts who work together to create a treatment
+            plan just for you. Only the highest standards ensure excellent outcomes.
+          </div>
+        </div>
+        <div class="innovative">
+          <div class="img-container"><img
+            src="https://my.clevelandclinic.org/-/scassets/images/org/icons/care-pages/spotlight-panel/innovation-research.svg"
+            alt="patient centered care icon"></div>
+          <div class="why-card-title">Innovation and research:</div>
+          <div class="why-card-des">
+            We're focused on today — and tomorrow. Our focus on research and offering the latest options means you can
+            find a wide range of clinical trials and other care that you can’t find elsewhere.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="numbers">
+      <div class="appointment">Appointments:
+        <div class="appointment-number">123.456.789</div>
+      </div>
+      <div class="question">Questions:
+        <div class="question-number">987.654.321</div>
+      </div>
+    </div>
+    <div class="social-media">
+      <div class="social-icon">
+        <img src="https://cdn-icons-png.flaticon.com/128/20/20837.png" alt="" id="facebook">
+        <img src="https://cdn-icons-png.flaticon.com/128/1077/1077042.png" alt="">
+        <img src="https://cdn-icons-png.flaticon.com/128/1077/1077046.png" alt="">
+        <img src="https://cdn-icons-png.flaticon.com/128/733/733635.png" alt="">
+      </div>
+    </div>
+    {% else %}
+    <div class="col-md-6 offset-md-3">
+    <h1>Login</h1>
+    <form method = "POST" action="{% url 'home' %}">
+    {% csrf_token %}
+        <div class="form-group">
+            <label for="exampleUsername">Username</label>
+          <input type="text" name = "username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter Username" required>
+          
+        </div>
+        <div class="form-group">
+            <label for="examplePassword">Password</label>
+          <input type="password" name = "password" class="form-control" id="exampleInputPassword1" placeholder="Enter Password" required>
+        </div>
+        
+        <button type="submit" class="btn btn-secondary">Login</button>
+      </form>
+      </div>
+{%endif%}
+{%endblock%}
