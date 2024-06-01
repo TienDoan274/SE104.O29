@@ -1,9 +1,11 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Hoadon,PhieuKB,Benhnhan
+from .models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from django.db import models
+
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(label="", widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
     name = forms.CharField(label="",max_length=100,widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Name'}))
@@ -41,22 +43,18 @@ class FormThemBN(forms.ModelForm):
         exclude = ("patient",)
 
 
-class FormPhieuKB(forms.ModelForm):
-    hoten = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder":"Họ tên", "class":"form-control"}), label="")
-    ngaykham= forms.DateField(required=True, widget=forms.DateInput(attrs={"type":"date", "class":"form-control"}), label="")
-    trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder":"Symptoms", "class":"form-control"}), label="Symptoms")
-    dudoan = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class":"form-control"}), label="Prediction")
-    
-    class Meta:
-        model = PhieuKB
-        exclude = ("user",)
+class FormPhieuKB(forms.Form):
+    hoten = forms.CharField(disabled=True, required=True, widget=forms.TextInput(attrs={"placeholder": "Họ tên", "class": "form-control"}), label="")
+    ngaykham = forms.DateField(disabled=True, required=True, widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}), label="")
+    trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Triệu chứng", "class": "form-control"}), label="Symptoms")
+    dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Symptoms")
 
-class FormthemThuoc(forms.ModelForm):
+class FormthemLoaiThuoc(forms.Form):
     tenThuoc = forms.CharField()
     giatheovien = forms.IntegerField()
     giatheochai = forms.IntegerField()
-    sovienthem = forms.IntegerField()
-    sochaithem = forms.IntegerField()
+    # sovienthem = forms.IntegerField()
+    # sochaithem = forms.IntegerField()
 
 
         

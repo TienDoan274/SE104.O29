@@ -35,7 +35,7 @@ class PKBthuoc(models.Model):
     phieukb = models.ForeignKey(PhieuKB,on_delete=models.CASCADE)
     thuoc = models.ManyToManyField(Thuoc)
     donvi = models.CharField(max_length=50)
-    soluong = models.ImageField()
+    soluong = models.IntegerField()
     cachdung = models.CharField(max_length=50)
     
 

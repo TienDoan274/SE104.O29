@@ -12,12 +12,13 @@ urlpatterns = [
     path("hoadon/<int:id>/",views.hoadon, name ="hoadon"),
     path("add_bill/<int:pk>/",views.add_bill, name ="add_bill"),
     path("thuoc/",views.thuoc, name ="thuoc"),
-    path("them_thuoc/",views.them_thuoc, name ="them_thuoc"),
+    path("them_loai_thuoc/",views.them_loai_thuoc, name ="them_loai_thuoc"),
+    path('update_thuoc/', views.update_thuoc, name='update_thuoc'),
 
     path("chonNgaydskb/",views.chonNgaydskb, name ="chonNgaydskb"),
 
     path("list_patient/",views.list_patient, name ="list_patient"),
     # path('all_patients/', views.all_patients, name='all_patients'),
-    
+
 ]
 

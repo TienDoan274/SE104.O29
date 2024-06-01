@@ -4,6 +4,8 @@
 
 {% if thuocs %}
 <table class="table table-striped">
+    {% csrf_token %}
+
     <thead>
         <tr>
             <th>STT</th>
@@ -18,10 +20,28 @@
         {% for thuoc in thuocs %}
         <tr>
             <td>{{ thuoc.id }}</td>
-            <td>{{ thuoc.giatheovien }}</td>
-            <td>{{ thuoc.giatheochai }}</td>
-            <td>{{ thuoc.soviencon }}</td>
-            <td>{{ thuoc.sochaicon }}</td>
+            <td>{{ thuoc.tenThuoc }}</td>
+            <td>
+                <span id="gia-theo-vien-{{ thuoc.id }}">{{ thuoc.giatheovien }}</span>
+                <button onclick="decreasePillsPrice({{ thuoc.id }})">-</button>
+                <button onclick="increasePillsPrice({{ thuoc.id }})">+</button>
+            </td>
+            <td>
+                <span id="gia-theo-chai-{{ thuoc.id }}">{{ thuoc.giatheochai }}</span>
+                <button onclick="decreaseBottlesPrice({{ thuoc.id }})">-</button>
+                <button onclick="increaseBottlesPrice({{ thuoc.id }})">+</button>
+            </td>
+            <td>
+                <span id="so-vien-{{ thuoc.id }}">{{ thuoc.soviencon }}</span>
+                <button onclick="decreasePills({{ thuoc.id }})">-</button>
+                <button onclick="increasePills({{ thuoc.id }})">+</button>
+            </td>
+            <td>
+                <span id="so-chai-{{ thuoc.id }}">{{ thuoc.sochaicon }}</span>
+                <button onclick="decreaseBottles({{ thuoc.id }})">-</button>
+                <button onclick="increaseBottles({{ thuoc.id }})">+</button>
+            </td>
+            
         </tr>
         {% endfor %}
     </tbody>
@@ -29,6 +49,105 @@
 {% else %}
 <h1>Chưa có thuốc</h1>
 {% endif %}
+<a href="{% url 'them_loai_thuoc' %}" class="btn btn-primary" role="button">Thêm loại thuốc</a>
 
+<script>
+    function sendUpdateRequest(thuocId, field, value) {
+        console.log(thuocId,field,value)
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+        fetch("{% url 'update_thuoc' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken,
+            },
+            body: new URLSearchParams({
+                "thuoc_id": thuocId,
+                "field": field,
+                "value": value,
+            })
+        }).then(response => response.json())
+          .then(data => {
+              if (data.status === "success") {
+                  console.log("Update successful");
+              } else {
+                  console.error("Update failed:", data.message);
+              }
+          });
+    }
+    function decreasePills(thuocId) {
+        var soVienElement = document.getElementById("so-vien-" + thuocId);
+        var soVien = parseInt(soVienElement.innerText);
+        if (soVien > 0) {
+            soVien -= 1;
+            soVienElement.innerText = soVien;
+            sendUpdateRequest(thuocId, 'soviencon', soVien);
+        }
+    }
+
+    function increasePills(thuocId) {
+        var soVienElement = document.getElementById("so-vien-" + thuocId);
+        var soVien = parseInt(soVienElement.innerText);
+        soVien += 1;
+        soVienElement.innerText = soVien;
+        sendUpdateRequest(thuocId, 'soviencon', soVien);
+    }
+
+    // Tương tự cho các hàm khác
+    function decreaseBottles(thuocId) {
+        var soChaiElement = document.getElementById("so-chai-" + thuocId);
+        var soChai = parseInt(soChaiElement.innerText);
+        if (soChai > 0) {
+            soChai -= 1;
+            soChaiElement.innerText = soChai;
+            sendUpdateRequest(thuocId, 'sochaicon', soChai);
+        }
+    }
+
+    function increaseBottles(thuocId) {
+        var soChaiElement = document.getElementById("so-chai-" + thuocId);
+        var soChai = parseInt(soChaiElement.innerText);
+        soChai += 1;
+        soChaiElement.innerText = soChai;
+        sendUpdateRequest(thuocId, 'sochaicon', soChai);
+    }
+
+    function decreasePillsPrice(thuocId) {
+        var giaTheoVienElement = document.getElementById("gia-theo-vien-" + thuocId);
+        var giaTheoVien = parseInt(giaTheoVienElement.innerText);
+        if (giaTheoVien > 0) {
+            giaTheoVien -= 1;
+            giaTheoVienElement.innerText = giaTheoVien;
+            sendUpdateRequest(thuocId, 'giatheovien', giaTheoVien);
+        }
+    }
+
+    function increasePillsPrice(thuocId) {
+        var giaTheoVienElement = document.getElementById("gia-theo-vien-" + thuocId);
+        var giaTheoVien = parseInt(giaTheoVienElement.innerText);
+        giaTheoVien += 1;
+        giaTheoVienElement.innerText = giaTheoVien;
+        sendUpdateRequest(thuocId, 'giatheovien', giaTheoVien);
+    }
+
+    function decreaseBottlesPrice(thuocId) {
+        var giaTheoChaiElement = document.getElementById("gia-theo-chai-" + thuocId);
+        var giaTheoChai = parseInt(giaTheoChaiElement.innerText);
+        if (giaTheoChai > 0) {
+            giaTheoChai -= 1;
+            giaTheoChaiElement.innerText = giaTheoChai;
+            sendUpdateRequest(thuocId, 'giatheochai', giaTheoChai);
+        }
+    }
+
+    function increaseBottlesPrice(thuocId) {
+        var giaTheoChaiElement = document.getElementById("gia-theo-chai-" + thuocId);
+        var giaTheoChai = parseInt(giaTheoChaiElement.innerText);
+        giaTheoChai += 1;
+        giaTheoChaiElement.innerText = giaTheoChai;
+        sendUpdateRequest(thuocId, 'giatheochai', giaTheoChai);
+    }
+</script>
 
 {% endblock %}

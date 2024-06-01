@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import Benhnhan,PKBthuoc, Thuoc,Hoadon,Benhnhan
+from .models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .forms import SignUpForm, FormThemBN, FormPhieuKB, FormthemThuoc
+from .forms import *
 from datetime import date
 import datetime
+from django.http import JsonResponse
+
+
 def home(request):
 	if request.method == 'POST':
 		username = request.POST['username']
@@ -67,7 +70,7 @@ def phieukb(request,id):
     # ngaykhamstr = target_BN.ngaykham.strftime('%m/%d/%Y')
     ngaykhamstr = target_BN.ngaykham
     try:
-        phieukb = MedicalReport.objects.get(benhnhan = target_BN)
+        phieukb = PhieuKB.objects.get(benhnhan = target_BN)
     except:
         phieukb = None
     if phieukb:
@@ -87,7 +90,14 @@ def add_phieukb(request,id):
     if request.user.is_authenticated:
         if request.method == "POST":
             if form.is_valid():
-                form.save()
+                phieukb = PhieuKB.objects.create(
+                    benhnhan = benhnhan,
+                    trieuchung = form.cleaned_data['trieuchung'],
+                    dudoan = form.cleaned_data['dudoan']
+                )
+                record = form.save(commit=False)
+                record.benhnhan = benhnhan
+                record.save()
                 messages.success(request, "Report Added!")
                 return redirect('phieukb',id = id)
         return render(request, 'add_phieukb.html',{'form':form,'id':id})
@@ -96,33 +106,50 @@ def add_phieukb(request,id):
         return redirect('home')
 
 
-# def list_patient(request):
-# 	if request.user.is_authenticated:
-# 		patients = PatientList.objects.all()
-# 		reports = MedicalExamination.objects.all()
-# 		return render(request, 'list_patient.html',{'patients':patients,'reports':reports})
-
 def thuoc(request):
     if request.user.is_authenticated:
         thoucs = Thuoc.objects.all()
         return render(request, 'thuoc.html',{'thuocs':thoucs})
 
-def them_thuoc(request):
+def them_loai_thuoc(request):
     if request.user.is_authenticated:
-        form = FormthemThuoc(request.POST or None)
+        thuocs = Thuoc.objects.all()
+        form = FormthemLoaiThuoc(request.POST or None)
         if request.method == "POST":
             if form.is_valid():
-                form.save()
+                try:
+                    timthuoc = Thuoc.objects.get(tenThuoc = form.cleaned_data['tenThuoc'])
+                except:
+                    timthuoc = None
+                if timthuoc == None:
+                    thuoc = Thuoc.objects.create(
+                        tenThuoc = form.cleaned_data['tenThuoc'],
+                        giatheovien = form.cleaned_data['giatheovien'],
+                        giatheochai = form.cleaned_data['giatheochai'],
+                        soviencon = 0,
+                        sochaicon = 0
+                        )
+                    
+                else:
+                    messages.success(request, "Mẫu thuốc đã tồi tại")
                 messages.success(request, "Report Added!")
                 return redirect('thuoc')
-        return render(request, 'themthuoc.html',{'form':form})
-# def all_patients(request):
-# 	if request.user.is_authenticated:
-# 		detailed_patients = DetailedPatientList.objects.select_related('patientlist__patient', 'examination').all()
-# 		return render(request, 'all_patients.html', {'detailed_patients': detailed_patients})
-# 	else:
-# 		messages.success(request, "You must be logged in to use that page!")
-# 		return redirect('home')
+        return render(request, 'them_loai_thuoc.html',{'form':form})
+
+def update_thuoc(request):
+    if request.method == "POST":
+        thuoc_id = request.POST.get("thuoc_id")
+        field = request.POST.get("field")
+        value = request.POST.get("value")
+        
+        try:
+            thuoc = Thuoc.objects.filter(id=thuoc_id)
+            thuoc.update(**{field: value})
+            return JsonResponse({"status": "success"})
+        except Thuoc.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Thuoc not found"})
+    
+    return JsonResponse({"status": "error", "message": "Invalid request"})
 
 
 def chonNgaydskb(request):
