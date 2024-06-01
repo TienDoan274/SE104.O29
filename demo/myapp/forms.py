@@ -57,6 +57,27 @@ class FormthemThuocPKB(forms.Form):
     soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
     cachdung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Cách dùng", "class": "form-control"}), label="")
     
+    def clean(self):
+        cleaned_data = super().clean()
+        tenThuoc = cleaned_data.get('tenThuoc')
+        soluong = cleaned_data.get('soluong')
+        donvi = cleaned_data.get('donvi')
+        if tenThuoc and soluong:
+            thuoc = Thuoc.objects.get(tenThuoc=tenThuoc)
+            if donvi == 'vien':
+                if soluong > thuoc.soviencon:
+                    self.add_error('soluong', f'Số viên thuốc chỉ còn lại {thuoc.soviencon} viên')
+                else:
+                    thuoc.soviencon = thuoc.soviencon - soluong
+            else:
+                if soluong > thuoc.sochaicon:
+                    self.add_error('soluong', f'Số chai thuốc chỉ còn lại {thuoc.sochaicon} chai')
+                else:
+                    thuoc.sochaicon = thuoc.sochaicon - soluong
+            thuoc.save()
+
+
+                    
 class FormthemLoaiThuoc(forms.Form):
     tenThuoc = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Tên thuốc", "class": "form-control"}), label="")
     giatheovien = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Giá theo viên","class":"form-control"}), label="")
@@ -65,14 +86,8 @@ class FormthemLoaiThuoc(forms.Form):
 
 
         
-# class AddBill(forms.ModelForm):
-#     name = forms.CharField(disabled=True,required=True, widget=forms.TextInput(attrs={"placeholder":"Name", "class":"form-control"}), label="")
-#     date= forms.DateField(disabled=True,required=True, widget=forms.DateInput(attrs={"type":"date", "class":"form-control"}), label="")
-#     cureCost = forms.IntegerField(initial=30000,disabled=True,required=True, widget=forms.TextInput(attrs={"placeholder":"cure cost","class":"form-control"}), label="")
-#     medicineCost = forms.IntegerField(disabled=True,required=False, widget=forms.TextInput(attrs={"placeholder":"medicine cost","class":"form-control"}), label="")
-#     class Meta:
-#         model = Bill
-#         exclude = ("user",)
-#         model = MedicalExamination
-#         exclude = ("user",)
+class AddBill(forms.Form):
+    tienkham = forms.IntegerField(disabled=True,required=True, widget=forms.TextInput(attrs={"placeholder":"cure cost","class":"form-control"}), label="")
+    tienthuoc = forms.IntegerField(disabled=True,required=False, widget=forms.TextInput(attrs={"placeholder":"medicine cost","class":"form-control"}), label="")
+
 

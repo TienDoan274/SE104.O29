@@ -1,29 +1,31 @@
 {% extends 'base.html' %}
 {%block title%}Bills{%endblock%}
 {% block content %}
+{% if hoadon %}
+
 <table class="table table-striped table-hover table-bordered">
     <thead class="table-dark">
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Date</th>
-        <th scope="col">Cure Cost</th>
-        <th scope="col">Medicine Cost</th>
+        <th scope="col">Họ tên</th>
+        <th scope="col">Ngày khám</th>
+        <th scope="col">Tiền khám</th>
+        <th scope="col">Tiền thuốc</th>
       </tr>
     </thead>
     <tbody>
       
-  {% if hoadon %}
-        <tr>
-            <td>{{ hoadon.id }}</td>
-            <td>{{ hoadon.name }}</td>
-            <td>{{ hoadon.date }}</td>
-            <td>{{ hoadon.cureCost }}</td>
-            <td>{{ hoadon.medicineCost }}</td>
-            
-        </tr>  
+      <tr>
+          <td>{{ hoadon.benhnhan.hoten }}</td>
+          <td>{{ hoadon.benhnhan.ngaykham }}</td>
+          <td>{{ hoadon.tienkham }}</td>
+          <td>{{ hoadon.tienthuoc }}</td>
+          
+      </tr>  
+    </tbody>
+  </table>
+  {% else %}
+  <h1>Chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
   {% endif %}
-      
-        </tbody>
-      </table>
+  <a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-primary" role="button">Back</a>
+
 {%endblock%}

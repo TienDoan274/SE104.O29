@@ -131,6 +131,12 @@ def add_phieukb(request,id):
         messages.success(request, "You must be logged in to use that page!")
         return redirect('home')
 
+def xoa_pkbthuoc(request,id_pkbthuoc,id_benhnhan):
+    pkbthuoc = PKBthuoc.objects.get(id = id_pkbthuoc)
+    pkbthuoc.delete()
+    return redirect('phieukb',id = id_benhnhan)
+
+    
 
 def thuoc(request):
     if request.user.is_authenticated:
@@ -182,17 +188,37 @@ def chonNgaydskb(request):
     
     return render(request, 'chonNgaydskb.html')
 
-def list_patient(request):
-	if request.user.is_authenticated:
-		patients = Benhnhan.objects.all()
-		reports = MedicalReport.objects.all()
-		return render(request, 'list_patient.html',{'patients':patients,'reports':reports})
-
 def hoadon(request,id):
     if request.user.is_authenticated:
         target_BN = Benhnhan.objects.get(id = id)
-        hoadon = MedicalReport.objects.get(benhnhan = target_BN)
-        return render(request, 'hoadon.html',{'hoadon':hoadon})
+        # try:
+        #     hoadon = Hoadon.objects.get(benhnhan = target_BN)
+        # except:
+        #     hoadon = None
+        # if not hoadon:
+        try:
+            phieukb = PhieuKB.objects.get(benhnhan = target_BN)
+        except:
+            hoadon = None
+            phieukb = None
+        if phieukb:
+            tienthuoc = 0
+            try:
+                pkbthuocs = PKBthuoc.objects.filter(phieukb = phieukb)
+                for pkbthuoc in pkbthuocs:
+                    if pkbthuoc.donvi == 'vien':
+                        tienthuoc = tienthuoc + pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
+                    else:
+                        tienthuoc = tienthuoc + pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
+            finally:
+                hoadon,created = Hoadon.objects.update_or_create(
+                    benhnhan = target_BN,
+                    tienkham = 30000,
+                    defaults={'tienthuoc':tienthuoc}
+                )
+                hoadon.save()
+                
+        return render(request, 'hoadon.html',{'hoadon':hoadon,'ngaykham':target_BN.ngaykham})
 
 def add_bill(request,pk):
     patient = Benhnhan.objects.get(id = pk)

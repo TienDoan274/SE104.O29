@@ -9,8 +9,8 @@ urlpatterns = [
     path("phieukb/<int:id>/",views.phieukb, name ="phieukb"),
     path("add_phieukb/<int:id>/",views.add_phieukb, name ="add_phieukb"),
     path("add_thuocphieukb/<int:id>/",views.add_thuocphieukb, name ="add_thuocphieukb"),
+    path('xoa_pkbthuoc/<int:id_pkbthuoc>/<int:id_benhnhan>', views.xoa_pkbthuoc, name='xoa_pkbthuoc'),
 
-    path("list_patient/",views.list_patient, name ="list_patient"),
     path("hoadon/<int:id>/",views.hoadon, name ="hoadon"),
     path("add_bill/<int:pk>/",views.add_bill, name ="add_bill"),
     path("thuoc/",views.thuoc, name ="thuoc"),
