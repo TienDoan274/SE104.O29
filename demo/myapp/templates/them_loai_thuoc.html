@@ -4,7 +4,7 @@
 <div class="col-md-6 offset-md-3">
     <h1>Thêm thuốc</h1>
     <br>
-    <form id ='them_thuoc' method = "POST" action="{% url 'themBN' day month year %}">
+    <form id ='them_loai_thuoc' method = "POST">
         {% csrf_token %}
         {{form.as_p}}
 

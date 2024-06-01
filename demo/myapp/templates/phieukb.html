@@ -6,26 +6,22 @@
 <table class="table table-striped table-hover table-bordered">
     <thead class="table-dark">
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Date</th>
-        <th scope="col">Symptoms</th>
-        <th scope="col">Prediction</th>
-        <th scope="col">Medicine</th>
-        <th scope="col">Unit</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Way</th>
+        <th scope="col">Họ tên</th>
+        <th scope="col">Ngày khám</th>
+        <th scope="col">Triệu chứng</th>
+        <th scope="col">Dự đoán loại bệnh</th>
+
       </tr>
     </thead>
     <tbody>
       
       </tr>
-        <td>{{ phieukb.id }}</td>
         <td>{{ phieukb.benhnhan.hoten }}</td>
         <td>{{ phieukb.benhnhan.ngaykham }}</td>
         <td>{{ phieukb.trieuchung }}</td>
         <td>{{ phieukb.dudoan }}</td>
       </tr>
+    
       {% if pkbthuocs %}
       <thead class="table-dark">
         <tr>
@@ -34,22 +30,27 @@
           <th scope="col">Đơn vị</th>
           <th scope="col">Số lượng</th>
           <th scope="col">Cách dùng</th>
+          {% comment %} <th scope="col">Sửa</th> {% endcomment %}
+
         </tr>
       </thead>
       {% for pkbthuoc in pkbthuocs  %}
       <tbody>
         <tr>
-          <td>{{ pkbthuoc.id }}</td>
+          <td>{{forloop.counter}}</td>
           <td>{{ pkbthuoc.thuoc.tenThuoc }}</td>
           <td>{{ pkbthuoc.donvi }}</td>
           <td>{{ pkbthuoc.soluong }}</td>
           <td>{{ pkbthuoc.cachdung }}</td>
+          <td><a href="{% url 'xoa_pkbthuoc' pkbthuoc.id phieukb.benhnhan.id %}" class="btn btn-primary">Xóa</a></td>
       </tbody>
       {% endfor %}
       {% endif %}
 
     </tbody>
   </table>
+<a href="{% url 'add_thuocphieukb' idBenhnhan %}" class="btn btn-primary" role="button">Thêm thuốc</a>
+
 {% else %}
   <h1>Bạn chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
   <a href="{% url 'add_phieukb' idBenhnhan %}" class="btn btn-primary" role="button">Tạo</a>

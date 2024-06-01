@@ -33,7 +33,7 @@ class Thuoc(models.Model):
 
 class PKBthuoc(models.Model):
     phieukb = models.ForeignKey(PhieuKB,on_delete=models.CASCADE)
-    thuoc = models.ManyToManyField(Thuoc)
+    thuoc = models.ForeignKey(Thuoc,on_delete=models.CASCADE)
     donvi = models.CharField(max_length=50)
     soluong = models.IntegerField()
     cachdung = models.CharField(max_length=50)

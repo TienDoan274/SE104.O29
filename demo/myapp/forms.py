@@ -4,6 +4,8 @@ from django import forms
 from .models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
+from django.db import models
+
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(label="", widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
     name = forms.CharField(label="",max_length=100,widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Name'}))
@@ -41,35 +43,53 @@ class FormThemBN(forms.ModelForm):
         exclude = ("patient",)
 
 
-class FormPhieuKB(forms.ModelForm):
-    hoten = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder":"Họ tên", "class":"form-control"}), label="")
-    ngaykham= forms.DateField(required=True, widget=forms.DateInput(attrs={"type":"date", "class":"form-control"}), label="")
-    trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder":"Symptoms", "class":"form-control"}), label="Symptoms")
-    dudoan = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class":"form-control"}), label="Prediction")
-    
-    class Meta:
-        model = PhieuKB
-        exclude = ("user",)
+class FormPhieuKB(forms.Form):
+    hoten = forms.CharField(disabled=True, required=True, widget=forms.TextInput(attrs={"placeholder": "Họ tên", "class": "form-control"}), label="")
+    ngaykham = forms.DateField(disabled=True, required=True, widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}), label="")
+    trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Triệu chứng", "class": "form-control"}), label="Symptoms")
+    dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Symptoms")
 
-class FormthemThuoc(forms.ModelForm):
-    tenThuoc = forms.CharField()
-    giatheovien = forms.IntegerField()
-    giatheochai = forms.IntegerField()
-    sovienthem = forms.IntegerField()
-    sochaithem = forms.IntegerField()
+cacloaithuoc = Thuoc.objects.all().values('tenThuoc')
+choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in cacloaithuoc]
+class FormthemThuocPKB(forms.Form):
+    tenThuoc = forms.ChoiceField(required=True, choices=choices, widget=forms.Select(attrs={"class": "form-control"}), label="")
+    donvi = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
+    soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
+    cachdung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Cách dùng", "class": "form-control"}), label="")
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        tenThuoc = cleaned_data.get('tenThuoc')
+        soluong = cleaned_data.get('soluong')
+        donvi = cleaned_data.get('donvi')
+        if tenThuoc and soluong:
+            thuoc = Thuoc.objects.get(tenThuoc=tenThuoc)
+            if donvi == 'vien':
+                if soluong > thuoc.soviencon:
+                    self.add_error('soluong', f'Số viên thuốc chỉ còn lại {thuoc.soviencon} viên')
+                else:
+                    thuoc.soviencon = thuoc.soviencon - soluong
+            else:
+                if soluong > thuoc.sochaicon:
+                    self.add_error('soluong', f'Số chai thuốc chỉ còn lại {thuoc.sochaicon} chai')
+                else:
+                    thuoc.sochaicon = thuoc.sochaicon - soluong
+            thuoc.save()
+
+
+                    
+class FormthemLoaiThuoc(forms.Form):
+    tenThuoc = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Tên thuốc", "class": "form-control"}), label="")
+    giatheovien = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Giá theo viên","class":"form-control"}), label="")
+    giatheochai = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Giá theo chai","class":"form-control"}), label="")
+
 
 
         
-# class AddBill(forms.ModelForm):
-#     name = forms.CharField(disabled=True,required=True, widget=forms.TextInput(attrs={"placeholder":"Name", "class":"form-control"}), label="")
-#     date= forms.DateField(disabled=True,required=True, widget=forms.DateInput(attrs={"type":"date", "class":"form-control"}), label="")
-#     cureCost = forms.IntegerField(initial=30000,disabled=True,required=True, widget=forms.TextInput(attrs={"placeholder":"cure cost","class":"form-control"}), label="")
-#     medicineCost = forms.IntegerField(disabled=True,required=False, widget=forms.TextInput(attrs={"placeholder":"medicine cost","class":"form-control"}), label="")
-#     class Meta:
-#         model = Bill
-#         exclude = ("user",)
-#         model = MedicalExamination
-#         exclude = ("user",)
+class AddBill(forms.Form):
+    tienkham = forms.IntegerField(disabled=True,required=True, widget=forms.TextInput(attrs={"placeholder":"cure cost","class":"form-control"}), label="")
+    tienthuoc = forms.IntegerField(disabled=True,required=False, widget=forms.TextInput(attrs={"placeholder":"medicine cost","class":"form-control"}), label="")
+
 
         
 class thietbiForm(forms.ModelForm):
