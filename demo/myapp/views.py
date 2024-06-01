@@ -82,6 +82,32 @@ def phieukb(request,id):
         pkbthuocs = None
     return render(request, 'phieukb.html',{'pkbthuocs':pkbthuocs,'phieukb':phieukb,'idBenhnhan':target_BN.id,'ngaykhamstr': ngaykhamstr})
 
+def add_thuocphieukb(request,id):
+    if request.user.is_authenticated:
+        form = FormthemThuocPKB(request.POST or None)
+        benhnhan = Benhnhan.objects.get(id = id)
+        phieukb = PhieuKB.objects.get(benhnhan = benhnhan)
+        
+        if request.method == "POST":
+            if form.is_valid():
+                thuoc = Thuoc.objects.get(tenThuoc = form.cleaned_data['tenThuoc'])
+                phieukbthuoc = PKBthuoc.objects.create(
+                    phieukb = phieukb,
+                    thuoc = thuoc,
+                    donvi = form.cleaned_data['donvi'],
+                    soluong = form.cleaned_data['soluong'],
+                    cachdung = form.cleaned_data['cachdung']
+                )
+                # phieukbthuoc = PKBthuoc(phieukb = phieukb,donvi = form.cleaned_data['donvi'],soluong = form.cleaned_data['soluong'],cachdung = form.cleaned_data['cachdung'])
+                # phieukbthuoc.save()  
+                # phieukbthuoc.thuoc.add(thuoc)
+                messages.success(request, "Report Added!")
+                return redirect('phieukb',id = id)
+        return render(request, 'add_thuocphieukb.html',{'form':form,'id':id})
+    else:
+        messages.success(request, "You must be logged in to use that page!")
+        return redirect('home')
+
 def add_phieukb(request,id):
     form = FormPhieuKB(request.POST or None)
     benhnhan = Benhnhan.objects.get(id = id)
@@ -95,9 +121,9 @@ def add_phieukb(request,id):
                     trieuchung = form.cleaned_data['trieuchung'],
                     dudoan = form.cleaned_data['dudoan']
                 )
-                record = form.save(commit=False)
-                record.benhnhan = benhnhan
-                record.save()
+                # record = form.save(commit=False)
+                # record.phieukb = phieukb
+                # record.save()
                 messages.success(request, "Report Added!")
                 return redirect('phieukb',id = id)
         return render(request, 'add_phieukb.html',{'form':form,'id':id})

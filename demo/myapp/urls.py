@@ -8,6 +8,8 @@ urlpatterns = [
     path('themBN/<str:ngaykhamstr>/', views.themBN, name='themBN'),
     path("phieukb/<int:id>/",views.phieukb, name ="phieukb"),
     path("add_phieukb/<int:id>/",views.add_phieukb, name ="add_phieukb"),
+    path("add_thuocphieukb/<int:id>/",views.add_thuocphieukb, name ="add_thuocphieukb"),
+
     path("list_patient/",views.list_patient, name ="list_patient"),
     path("hoadon/<int:id>/",views.hoadon, name ="hoadon"),
     path("add_bill/<int:pk>/",views.add_bill, name ="add_bill"),
@@ -16,9 +18,6 @@ urlpatterns = [
     path('update_thuoc/', views.update_thuoc, name='update_thuoc'),
 
     path("chonNgaydskb/",views.chonNgaydskb, name ="chonNgaydskb"),
-
-    path("list_patient/",views.list_patient, name ="list_patient"),
-    # path('all_patients/', views.all_patients, name='all_patients'),
 
 ]
 

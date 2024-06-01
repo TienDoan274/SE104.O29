@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Thuoc,PKBthuoc,PhieuKB,Benhnhan
+from .models import *
 # Register your models here.
 # admin.site.register(PatientList)
 # admin.site.register(MedicalExamination)

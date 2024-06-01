@@ -11,10 +11,7 @@
         <th scope="col">Date</th>
         <th scope="col">Symptoms</th>
         <th scope="col">Prediction</th>
-        <th scope="col">Medicine</th>
-        <th scope="col">Unit</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Way</th>
+
       </tr>
     </thead>
     <tbody>
@@ -50,6 +47,8 @@
 
     </tbody>
   </table>
+<a href="{% url 'add_thuocphieukb' idBenhnhan %}" class="btn btn-primary" role="button">Thêm thuốc</a>
+
 {% else %}
   <h1>Bạn chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
   <a href="{% url 'add_phieukb' idBenhnhan %}" class="btn btn-primary" role="button">Tạo</a>

@@ -49,12 +49,19 @@ class FormPhieuKB(forms.Form):
     trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Triệu chứng", "class": "form-control"}), label="Symptoms")
     dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Symptoms")
 
+cacloaithuoc = Thuoc.objects.all().values('tenThuoc')
+choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in cacloaithuoc]
+class FormthemThuocPKB(forms.Form):
+    tenThuoc = forms.ChoiceField(required=True, choices=choices, widget=forms.Select(attrs={"class": "form-control"}), label="")
+    donvi = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
+    soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
+    cachdung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Cách dùng", "class": "form-control"}), label="")
+    
 class FormthemLoaiThuoc(forms.Form):
-    tenThuoc = forms.CharField()
-    giatheovien = forms.IntegerField()
-    giatheochai = forms.IntegerField()
-    # sovienthem = forms.IntegerField()
-    # sochaithem = forms.IntegerField()
+    tenThuoc = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Tên thuốc", "class": "form-control"}), label="")
+    giatheovien = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Giá theo viên","class":"form-control"}), label="")
+    giatheochai = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Giá theo chai","class":"form-control"}), label="")
+
 
 
         
