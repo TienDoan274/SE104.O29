@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Hoadon,PhieuKB,Benhnhan
+from .models import *
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 class SignUpForm(UserCreationForm):
@@ -71,3 +71,11 @@ class FormthemThuoc(forms.ModelForm):
 #         model = MedicalExamination
 #         exclude = ("user",)
 
+        
+class thietbiForm(forms.ModelForm):
+    class Meta:
+        model = thietbiYte
+        fields = ['name', 'supplier', 'quantity', 'import_date', 'price', 'purpose']
+        widgets = {
+            'import_date': forms.DateInput(attrs={'type': 'date'}),
+        }

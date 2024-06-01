@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Danh sach thiet bi y te{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Danh sách thiết bị y tế</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'them_thietbi' %}" class="btn btn-primary">Nhập thiết bị y tế</a>
+    </div>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Tên thiết bị</th>
+                <th scope="col">Nhà cung cấp</th>
+                <th scope="col">Số lượng</th>
+                <th scope="col">Ngày nhập</th>
+                <th scope="col">Giá tiền</th>
+                <th scope="col">Mục đích sử dụng</th>
+                <th scope="col">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ device.name }}</td>
+                <td>{{ device.supplier }}</td>
+                <td>{{ device.quantity }}</td>
+                <td>{{ device.import_date }}</td>
+                <td>{{ device.price       }}</td>
+                <td>{{ device.purpose }}</td>
+                <td>
+                    <a href="{% url 'sua_thietbi' device.id %}" class="btn btn-sm btn-warning">Sửa</a>
+                    <a href="{% url 'xoa_thietbi' device.id %}" class="btn btn-sm btn-danger">Xóa</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

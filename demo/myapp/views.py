@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
-from .models import Benhnhan,PKBthuoc, Thuoc,Hoadon,Benhnhan
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
-from .forms import SignUpForm, FormThemBN, FormPhieuKB, FormthemThuoc
+from .forms import *
 from datetime import date
 import datetime
 def home(request):
@@ -67,7 +67,7 @@ def phieukb(request,id):
     # ngaykhamstr = target_BN.ngaykham.strftime('%m/%d/%Y')
     ngaykhamstr = target_BN.ngaykham
     try:
-        phieukb = MedicalReport.objects.get(benhnhan = target_BN)
+        phieukb = phieukb.objects.get(benhnhan = target_BN)
     except:
         phieukb = None
     if phieukb:
@@ -95,7 +95,9 @@ def add_phieukb(request,id):
         messages.success(request, "You must be logged in to use that page!")
         return redirect('home')
 
-
+def chonNgaydskb(request):
+    
+    return render(request, 'chonNgaydskb.html')
 # def list_patient(request):
 # 	if request.user.is_authenticated:
 # 		patients = PatientList.objects.all()
@@ -124,37 +126,34 @@ def them_thuoc(request):
 # 		messages.success(request, "You must be logged in to use that page!")
 # 		return redirect('home')
 
+def danhsachTBi(request):
+    devices = thietbiYte.objects.all()
+    return render(request, 'danhsachTBi.html', {'devices': devices})
 
-def chonNgaydskb(request):
-    
-    return render(request, 'chonNgaydskb.html')
-
-def list_patient(request):
-	if request.user.is_authenticated:
-		patients = Benhnhan.objects.all()
-		reports = MedicalReport.objects.all()
-		return render(request, 'list_patient.html',{'patients':patients,'reports':reports})
-
-def hoadon(request,id):
-    if request.user.is_authenticated:
-        target_BN = Benhnhan.objects.get(id = id)
-        hoadon = MedicalReport.objects.get(benhnhan = target_BN)
-        return render(request, 'hoadon.html',{'hoadon':hoadon})
-
-def add_bill(request,pk):
-    patient = Benhnhan.objects.get(id = pk)
-    form = AddBill(request.POST or None)
-    form.initial['name'] = patient.name
-    form.initial['date'] = patient.date
-    report = MedicalReport.objects.get(name = patient.name,date = patient.date)
-    form.initial['medicineCost'] = report.amount
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Bill Added!")
-                return redirect('hoadon',pk = 1)
-        return render(request, 'add_bill.html',{'form':form,'patient':patient,'pk':pk})
+def themTBi_new(request):
+    if request.method == 'POST':
+        form = thietbiForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('danhsachTBi')
     else:
-        messages.success(request, "You must be logged in to use that page!")
-        return redirect('hoadon',pk=1)	
+        form = thietbiForm()
+    return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Nhập thiết bị y tế'})
+
+def suaTBi(request, pk):
+    device = get_object_or_404(thietbiYte, pk=pk)
+    if request.method == 'POST':
+        form = thietbiForm(request.POST, instance=device)
+        if form.is_valid():
+            form.save()
+            return redirect('danhsachTBi')
+    else:
+        form = thietbiForm(instance=device)
+    return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Sửa thiết bị y tế'})
+
+def xoaTBi(request, pk):
+    device = get_object_or_404(thietbiYte, pk=pk)
+    if request.method == 'POST':
+        device.delete()
+        return redirect('danhsachTBi')
+    return render(request, 'xacnhanXoaTBi.html', {'device': device})

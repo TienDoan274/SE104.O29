@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load bootstrap_filters %}
+
+{% block title %} Them sua thiet bi y te {% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-500">
+    <div class="col-md-6">
+        <h2 class="mb-4 text-center">Nhập thiết bị mới </h2>
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_name" class="form-label">Tên thiết bị</label>
+                {{ form.name|as_bootstrap }}
+                <div class="invalid-feedback">
+                    Vui lòng nhập tên thiết bị.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="id_supplier" class="form-label">Nhà cung cấp</label>
+                {{ form.supplier|as_bootstrap }}
+                <div class="invalid-feedback">
+                    Vui lòng chọn nhà cung cấp.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="id_quantity" class="form-label">Số lượng</label>
+                {{ form.quantity|as_bootstrap }}
+                <div class="invalid-feedback">
+                    Vui lòng nhập số lượng.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="id_import_date" class="form-label">Ngày nhập</label>
+                {{ form.import_date|as_bootstrap }}
+                <div class="invalid-feedback">
+                    Vui lòng nhập ngày nhập.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="id_price" class="form-label">Giá tiền</label>
+                {{ form.price|as_bootstrap }}
+                <div class="invalid-feedback">
+                    Vui lòng nhập giá tiền.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="id_purpose" class="form-label">Mục đích sử dụng</label>
+                {{ form.purpose|as_bootstrap }}
+                <div class="invalid-feedback">
+                    Vui lòng nhập mục đích sử dụng.
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a href="{% url 'danhsachTBi' %}" class="btn btn-secondary">Quay lại danh sách</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
