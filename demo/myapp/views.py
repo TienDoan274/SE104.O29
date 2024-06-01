@@ -193,8 +193,8 @@ def themTBi_new(request):
         if form.is_valid():
             form.save()
             return redirect('danhsachTBi')
-        else:
-            form = thietbiForm()
+    else:
+        form = thietbiForm()
     return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Nhập thiết bị y tế'})
 
 def chonNgaydskb(request):

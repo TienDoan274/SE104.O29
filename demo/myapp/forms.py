@@ -50,9 +50,9 @@ class FormPhieuKB(forms.Form):
     dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Symptoms")
 
 cacloaithuoc = Thuoc.objects.all().values('tenThuoc')
-choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in cacloaithuoc]
+#choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in cacloaithuoc]
 class FormthemThuocPKB(forms.Form):
-    tenThuoc = forms.ChoiceField(required=True, choices=choices, widget=forms.Select(attrs={"class": "form-control"}), label="")
+    tenThuoc = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
     donvi = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
     soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
     cachdung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Cách dùng", "class": "form-control"}), label="")
