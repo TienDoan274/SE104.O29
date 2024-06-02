@@ -14,12 +14,14 @@
             <th>Giá theo chai</th>
             <th>Số viên còn</th>
             <th>Số chai còn</th>
+            <th>Xóa</th>
+
         </tr>
     </thead>
     <tbody>
         {% for thuoc in thuocs %}
         <tr>
-            <td>{{ thuoc.id }}</td>
+            <td>{{ forloop.counter }}</td>
             <td>{{ thuoc.tenThuoc }}</td>
             <td>
                 <span id="gia-theo-vien-{{ thuoc.id }}">{{ thuoc.giatheovien }}</span>
@@ -41,7 +43,8 @@
                 <button onclick="decreaseBottles({{ thuoc.id }})">-</button>
                 <button onclick="increaseBottles({{ thuoc.id }})">+</button>
             </td>
-            
+            <td><a href="{% url 'delete_thuoc' thuoc.id %}" class="btn btn-primary">Xóa</a></td>
+
         </tr>
         {% endfor %}
     </tbody>
