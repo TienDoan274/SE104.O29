@@ -49,10 +49,10 @@ class FormPhieuKB(forms.Form):
     trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Triệu chứng", "class": "form-control"}), label="Symptoms")
     dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Symptoms")
 
-cacloaithuoc = Thuoc.objects.all().values('tenThuoc')
-#choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in cacloaithuoc]
+
 class FormthemThuocPKB(forms.Form):
     tenThuoc = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
+    tenThuoc = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control"}), label="")
     donvi = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
     soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
     cachdung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Cách dùng", "class": "form-control"}), label="")

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{%block title%}Sửa thông tin bệnh nhân{%endblock%}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <h1>Thêm thuốc</h1>
+    <br>
+    <form id ='update_BN' method = "POST">
+        {% csrf_token %}
+        {{form.as_p}}
+
+        <button type="submit" class="btn btn btn-success">Cập nhật</button>
+        <a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-secondary">Quay về</a>
+    </form>
+</div>
+{%endblock%}
