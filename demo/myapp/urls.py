@@ -31,7 +31,18 @@ urlpatterns = [
     path("thaydoi/",views.thaydoi, name ="thaydoi"),
     path("themloaibenh/",views.themloaibenh, name ="themloaibenh"),
     path("themcachdung/",views.themcachdung, name ="themcachdung"),
+    path('updatetienkham/', views.updatetienkham, name='updatetienkham'),
+    path('updatemaxpatient/', views.updatemaxpatient, name='updatemaxpatient'),
 
 
+    #path("list_patient/",views.list_patient, name ="list_patient"),
+    # path('all_patients/', views.all_patients, name='all_patients'),
+
+
+    path('danhsachTBi/', views.danhsachTBi, name='danhsachTBi'),
+    path('them_thietbi/', views.themTBi_new, name='them_thietbi'),
+    path('sua_thietbi/<int:pk>/', views.suaTBi, name='sua_thietbi'),
+    path('xoa_thietbi<int:pk>/', views.xoaTBi, name='xoa_thietbi')
 ]
+
 

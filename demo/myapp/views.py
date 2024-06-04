@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -55,12 +55,12 @@ def themBN(request,ngaykham):
     if request.user.is_authenticated:
         if request.method == "POST":
             if form.is_valid() :
-                if benhnhans.count()<3:
+                if benhnhans.count()<int(default_values.max_patient):
                     form.save()                
                     messages.success(request, "Record Added!")
                     return redirect('dsKhambenh',ngaykham = ngaykham)
                 else:
-                    messages.success(request, "Không được khám quá 3 bệnh nhân")
+                    messages.success(request, f"Không được khám quá {default_values.max_patient} bệnh nhân")
                     return redirect('dsKhambenh',ngaykham = ngaykham)
             else:
                 messages.error(request, "Record not added! Please correct errors.")
@@ -221,6 +221,19 @@ def update_thuoc(request):
     
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
+def danhsachTBi(request):
+    devices = thietbiYte.objects.all()
+    return render(request, 'danhsachTBi.html', {'devices': devices})
+
+def themTBi_new(request):
+    if request.method == 'POST':
+        form = thietbiForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('danhsachTBi')
+    else:
+        form = thietbiForm()
+    return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Nhập thiết bị y tế'})
 def delete_thuoc(request,id):
     thuoc = Thuoc.objects.get(id = id)
     thuoc.delete()
@@ -250,8 +263,8 @@ def hoadon(request,id):
             finally:
                 hoadon,created = Hoadon.objects.update_or_create(
                     benhnhan = target_BN,
-                    tienkham = 30000,
-                    defaults={'tienthuoc':tienthuoc}
+                    
+                    defaults={'tienthuoc':tienthuoc,'tienkham':default_values.tienkham}
                 )
                 hoadon.save()
                 
@@ -262,7 +275,7 @@ def add_bill(request,pk):
     form = AddBill(request.POST or None)
     form.initial['name'] = patient.name
     form.initial['date'] = patient.date
-    report = MedicalReport.objects.get(name = patient.name,date = patient.date)
+    report = thuoc.objects.get(name = patient.name,date = patient.date)
     form.initial['medicineCost'] = report.amount
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -274,6 +287,8 @@ def add_bill(request,pk):
     else:
         messages.success(request, "You must be logged in to use that page!")
         return redirect('hoadon',pk=1)	
+
+       
     
 def dsBenhnhan(request):
     phieukbs = PhieuKB.objects.all()
@@ -296,4 +311,36 @@ def themcachdung(request):
         cachdung = request.POST['cachdung']
         default_values.cachdung = default_values.cachdung + ',' + str(cachdung)
         default_values.save()
+    return redirect(thaydoi) 
+
+def updatetienkham(request):
+    if request.method == 'POST':
+        tienkham = request.POST['updatetienkham']
+        default_values.tienkham = tienkham
+        default_values.save()
     return redirect(thaydoi)
+
+def updatemaxpatient(request):
+    if request.method == 'POST':
+        maxpatient = request.POST['updatemaxpatient']
+        default_values.max_patient = maxpatient
+        default_values.save()
+    return redirect(thaydoi)            
+
+def xoaTBi(request, pk):
+    device = get_object_or_404(thietbiYte, pk=pk)
+    if request.method == 'POST':
+        device.delete()
+        return redirect('danhsachTBi')
+    return render(request, 'xacnhanXoaTBi.html', {'device': device})
+
+def suaTBi(request, pk):
+    device = get_object_or_404(thietbiYte, pk=pk)
+    if request.method == 'POST':
+        form = thietbiForm(request.POST, instance=device)
+        if form.is_valid():
+            form.save()
+            return redirect('danhsachTBi')
+    else:
+        form = thietbiForm(instance=device)
+    return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Sửa thiết bị y tế'}) 

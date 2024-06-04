@@ -23,11 +23,19 @@
         </tbody>
     </table>
 </div>
+<button type="submit" class="btn btn btn-success" onclick = "updatemaxpatient()">Thay đổi số bệnh nhân tối đa</button>
+<div id ="updatemaxpatient"></div>
+<br></br>
+
 <button type="submit" class="btn btn btn-success" onclick = "themloaibenh()">Thêm loại bệnh</button>
 <div id ="themloaibenh"></div>
 <br></br>
 <button type="submit" class="btn btn btn-success" onclick = "themcachdung()">Thêm cách dùng</button>
 <div id ="themcachdung"></div>
+<br></br>
+<button type="submit" class="btn btn btn-success" onclick = "updatetienkham()">Thay đổi tiền khám</button>
+<div id ="updatetienkham"></div>
+<br></br>
 
 <script>
     cachdungs = "{{default_values.cachdung}}".split(',')
@@ -54,13 +62,25 @@
     function themloaibenh(){
         element = document.getElementById('themloaibenh')
         element.innerHTML =`<form method="post" action="/themloaibenh/">{% csrf_token %}
-            <input type="text" name="loaibenh">
+            <input type="text" name="loaibenh" placeholder="Loại bệnh">
             <input type="submit" value="Submit"></form>`
     }
     function themcachdung(){
         element = document.getElementById('themcachdung')
         element.innerHTML =`<form method="post" action="/themcachdung/">{% csrf_token %}
-            <input type="text" name="cachdung">
+            <input type="text" name="cachdung" placeholder="Cách dùng">
+            <input type="submit" value="Submit"></form>`
+    }
+    function updatetienkham(){
+        element = document.getElementById('updatetienkham')
+        element.innerHTML=`<form method="post" action="/updatetienkham/">{% csrf_token %}
+            <input type="number" name="updatetienkham" placeholder="Tiền khám">
+            <input type="submit" value="Submit"></form>`
+    }
+    function updatemaxpatient(){
+        element = document.getElementById('updatemaxpatient')
+        element.innerHTML=`<form method="post" action="/updatemaxpatient/">{% csrf_token %}
+            <input type="number" name="updatemaxpatient" placeholder="Số bệnh nhân tối đa">
             <input type="submit" value="Submit"></form>`
     }
 </script>

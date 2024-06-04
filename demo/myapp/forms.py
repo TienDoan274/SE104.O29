@@ -36,7 +36,7 @@ class FormThemBN(forms.ModelForm):
     gioitinh = forms.ChoiceField(required=True, choices=[('M', 'Nam'), ('F', 'Nữ')], widget=forms.Select(attrs={"class": "form-control"}), label="Giới tính")
     namsinh = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder": "Năm sinh", "class": "form-control"}), label="Năm sinh")
     diachi = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Địa chỉ", "class": "form-control"}), label="Địa chỉ")
-    ngaykham = forms.DateField(required=True, widget=forms.DateInput(attrs={"type": "date", "class": "form-control","readonly": "readonly"}), label="Ngày khám")
+    ngaykham = forms.DateField(disabled=True,required=True, widget=forms.DateInput(attrs={"type": "date", "class": "form-control","readonly": "readonly"}), label="Ngày khám")
 
     class Meta:
         model = Benhnhan
@@ -88,3 +88,11 @@ class AddBill(forms.Form):
     tienthuoc = forms.IntegerField(disabled=True,required=False, widget=forms.TextInput(attrs={"placeholder":"medicine cost","class":"form-control"}), label="Tiền thu")
 
 
+        
+class thietbiForm(forms.ModelForm):
+    class Meta:
+        model = thietbiYte
+        fields = ['name', 'supplier', 'quantity', 'import_date', 'price', 'purpose']
+        widgets = {
+            'import_date': forms.DateInput(attrs={'type': 'date'}),
+        }
