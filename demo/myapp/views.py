@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -216,6 +216,19 @@ def update_thuoc(request):
     
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
+def danhsachTBi(request):
+    devices = thietbiYte.objects.all()
+    return render(request, 'danhsachTBi.html', {'devices': devices})
+
+def themTBi_new(request):
+    if request.method == 'POST':
+        form = thietbiForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('danhsachTBi')
+    else:
+        form = thietbiForm()
+    return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Nhập thiết bị y tế'})
 def delete_thuoc(request,id):
     thuoc = Thuoc.objects.get(id = id)
     thuoc.delete()
@@ -262,7 +275,7 @@ def add_bill(request,pk):
     form = AddBill(request.POST or None)
     form.initial['name'] = patient.name
     form.initial['date'] = patient.date
-    report = MedicalReport.objects.get(name = patient.name,date = patient.date)
+    report = thuoc.objects.get(name = patient.name,date = patient.date)
     form.initial['medicineCost'] = report.amount
     if request.user.is_authenticated:
         if request.method == "POST":
@@ -271,6 +284,22 @@ def add_bill(request,pk):
                 messages.success(request, "Bill Added!")
                 return redirect('hoadon',pk = 1)
         return render(request, 'add_bill.html',{'form':form,'patient':patient,'pk':pk})
+
+
+def suaTBi(request, pk):
+    device = get_object_or_404(thietbiYte, pk=pk)
+    if request.method == 'POST':
+        form = thietbiForm(request.POST, instance=device)
+        if form.is_valid():
+            form.save()
+            return redirect('danhsachTBi')
     else:
-        messages.success(request, "You must be logged in to use that page!")
-        return redirect('hoadon',pk=1)	
+        form = thietbiForm(instance=device)
+    return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Sửa thiết bị y tế'})
+
+def xoaTBi(request, pk):
+    device = get_object_or_404(thietbiYte, pk=pk)
+    if request.method == 'POST':
+        device.delete()
+        return redirect('danhsachTBi')
+    return render(request, 'xacnhanXoaTBi.html', {'device': device})

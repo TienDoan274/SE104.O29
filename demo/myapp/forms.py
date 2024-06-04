@@ -90,3 +90,11 @@ class AddBill(forms.Form):
     tienthuoc = forms.IntegerField(disabled=True,required=False, widget=forms.TextInput(attrs={"placeholder":"medicine cost","class":"form-control"}), label="")
 
 
+        
+class thietbiForm(forms.ModelForm):
+    class Meta:
+        model = thietbiYte
+        fields = ['name', 'supplier', 'quantity', 'import_date', 'price', 'purpose']
+        widgets = {
+            'import_date': forms.DateInput(attrs={'type': 'date'}),
+        }

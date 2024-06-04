@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Xac nhan xoa thiet bi y te{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-10">
+    <div class="col-md-6">
+        <h2 class="mb-4 text-center">Confirm Device Deletion</h2>
+        <div class="alert alert-danger text-center">
+            <p>Are you sure you want to delete the device <strong>{{ device.name }}</strong>?</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="{% url 'danhsachTBi' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
