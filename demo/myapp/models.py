@@ -38,5 +38,22 @@ class PKBthuoc(models.Model):
     soluong = models.IntegerField()
     cachdung = models.CharField(max_length=50)
     
+class thietbiYte(models.Model):
+    SUPPLIER_CHOICES = [
+        ('Supplier A', 'Supplier A'),
+        ('Supplier B', 'Supplier B'),
+        ('Supplier C', 'Supplier C'),
+        ('Supplier D', 'Supplier D'),
+        ('Supplier E', 'Supplier E'),
+    ]
 
+    name = models.CharField(max_length=200)
+    quantity = models.IntegerField()
+    supplier = models.CharField(max_length=200, choices=SUPPLIER_CHOICES)
+    import_date = models.DateField()
+    price = models.IntegerField()
+    purpose = models.TextField()
+
+    def __str__(self):
+        return self.name
     
