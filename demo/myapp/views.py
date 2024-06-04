@@ -41,34 +41,64 @@ def register_user(request):
 		form = SignUpForm()
 		return render(request, 'register.html',{'form': form})
 	return render(request, 'register.html',{'form': form})
-def dsKhambenh(request,ngaykhamstr):
+def dsKhambenh(request,ngaykham):
     if request.user.is_authenticated:
-        # ngaykham = datetime.datetime.strptime(ngaykhamstr,'%Y-%m-%d')
-        benhnhans = Benhnhan.objects.filter(ngaykham = ngaykhamstr)
-        return render(request, 'dsKhambenh.html',{'benhnhans':benhnhans,'ngaykhamstr':ngaykhamstr})
+        # ngaykham = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
+        benhnhans = Benhnhan.objects.filter(ngaykham = ngaykham)
+        return render(request, 'dsKhambenh.html',{'benhnhans':benhnhans,'ngaykham':ngaykham})
 
-def themBN(request,ngaykhamstr):
+def themBN(request,ngaykham):
     form = FormThemBN(request.POST or None)
-    # form.initial['ngaykham'] = datetime.datetime.strptime(ngaykhamstr,'%Y-%m-%d')
-    form.initial['ngaykham'] = ngaykhamstr
+    # form.initial['ngaykham'] = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
+    form.initial['ngaykham'] = ngaykham
 
     if request.user.is_authenticated:
         if request.method == "POST":
             if form.is_valid():
                 form.save()                
                 messages.success(request, "Record Added!")
-                return redirect('dsKhambenh',ngaykhamstr = ngaykhamstr)
+                return redirect('dsKhambenh',ngaykham = ngaykham)
             else:
                 messages.error(request, "Record not added! Please correct errors.")
-        return render(request, 'themBN.html', {'form': form,'ngaykhamstr':ngaykhamstr})
+        return render(request, 'themBN.html', {'form': form,'ngaykham':ngaykham})
     else:
         messages.error(request, "You must be logged in to use that page!")
         return redirect('home')
 
+def update_BN(request,id):
+    if request.user.is_authenticated:
+        target_BN = Benhnhan.objects.get(id = id)
+        form = FormThemBN(request.POST or None,instance= target_BN)
+        form.initial['hoten'] = target_BN.hoten
+        form.initial['gioitinh'] = target_BN.gioitinh
+        form.initial['namsinh'] = target_BN.namsinh
+        form.initial['diachi'] = target_BN.diachi
+        form.initial['ngaykham'] = target_BN.ngaykham
+
+        ngaykham = target_BN.ngaykham
+        if request.method == "POST":
+            if form.is_valid():
+                form.save() 
+                messages.success(request, "Record Added!")
+                return redirect('dsKhambenh',ngaykham = ngaykham)
+            else:
+                messages.error(request, "Record not added! Please correct errors.")
+        return render(request, 'update_BN.html', {'form': form,'id':id,'ngaykham':ngaykham})
+    else:
+        messages.error(request, "You must be logged in to use that page!")
+        return redirect('home')
+
+def delete_BN(request,id):
+    target_BN = Benhnhan.objects.get(id = id)
+    ngaykham = target_BN.ngaykham
+    target_BN.delete()
+    return redirect('dsKhambenh',ngaykham = ngaykham)
+
+
 def phieukb(request,id):
     target_BN = Benhnhan.objects.get(id = id)
-    # ngaykhamstr = target_BN.ngaykham.strftime('%m/%d/%Y')
-    ngaykhamstr = target_BN.ngaykham
+    # ngaykham = target_BN.ngaykham.strftime('%m/%d/%Y')
+    ngaykham = target_BN.ngaykham
     try:
         phieukb = PhieuKB.objects.get(benhnhan = target_BN)
     except:
@@ -80,14 +110,17 @@ def phieukb(request,id):
             pkbthuocs = None
     else:   
         pkbthuocs = None
-    return render(request, 'phieukb.html',{'pkbthuocs':pkbthuocs,'phieukb':phieukb,'idBenhnhan':target_BN.id,'ngaykhamstr': ngaykhamstr})
+    return render(request, 'phieukb.html',{'pkbthuocs':pkbthuocs,'phieukb':phieukb,'idBenhnhan':target_BN.id,'ngaykham': ngaykham})
+
 
 def add_thuocphieukb(request,id):
     if request.user.is_authenticated:
         form = FormthemThuocPKB(request.POST or None)
         benhnhan = Benhnhan.objects.get(id = id)
         phieukb = PhieuKB.objects.get(benhnhan = benhnhan)
-        
+        thuocs = Thuoc.objects.all().values('tenThuoc')
+        choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in thuocs]
+        form.fields['tenThuoc'].choices = choices
         if request.method == "POST":
             if form.is_valid():
                 thuoc = Thuoc.objects.get(tenThuoc = form.cleaned_data['tenThuoc'])
@@ -196,6 +229,10 @@ def themTBi_new(request):
     else:
         form = thietbiForm()
     return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Nhập thiết bị y tế'})
+def delete_thuoc(request,id):
+    thuoc = Thuoc.objects.get(id = id)
+    thuoc.delete()
+    return redirect('thuoc')
 
 def chonNgaydskb(request):
     

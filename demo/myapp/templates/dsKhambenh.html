@@ -2,8 +2,8 @@
 {% block title %}Home Page{% endblock %}
 {% block content %}
 <h1>Danh sách khám bệnh  </h1>
-<h4>Ngày khám : {{ngaykhamstr}}</h2>
-<a href="{% url 'themBN' ngaykhamstr %}" class="btn btn-primary" role="button">Thêm bệnh nhân</a>
+<h4>Ngày khám : {{ngaykham}}</h2>
+<a href="{% url 'themBN' ngaykham %}" class="btn btn-primary" role="button">Thêm bệnh nhân</a>
 
 {% if benhnhans %}
   <table class="table table-striped table-hover table-bordered table-light">
@@ -14,8 +14,11 @@
         <th scope="col">Giới tính</th>
         <th scope="col">Năm sinh</th>
         <th scope="col">Địa chỉ</th>
-        <th scope="col">Lập phiếu khám bệnh</th>
-        <th scope="col">Lập hóa đơn</th>
+        <th scope="col">Phiếu khám bệnh</th>
+        <th scope="col">Hóa đơn</th>
+        <th scope="col">Sửa thông tin</th>
+        <th scope="col">Xóa</th>
+
       </tr>
     </thead>
     {% for benhnhan in benhnhans %}
@@ -29,6 +32,8 @@
         <td>{{ benhnhan.diachi }}</td>
         <td><a href="{% url 'phieukb' benhnhan.id %}" class="btn btn-primary">Vào</a></td>
         <td><a href="{% url 'hoadon' benhnhan.id %}" class="btn btn-primary">Vào</a></td>
+        <td><a href="{% url 'update_BN' benhnhan.id %}" class="btn btn-primary">Sửa</a></td>
+        <td><a href="{% url 'delete_BN' benhnhan.id %}" class="btn btn-primary">Xóa</a></td>
 
       </tr>
     </tbody>
