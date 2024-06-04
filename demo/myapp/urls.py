@@ -27,8 +27,8 @@ urlpatterns = [
 
     #path("list_patient/",views.list_patient, name ="list_patient"),
     # path('all_patients/', views.all_patients, name='all_patients'),
-
-
+    path('bao_cao_su_dung_thuoc/', views.bao_cao_su_dung_thuoc, name='bao_cao_su_dung_thuoc'),
+    path('bao_cao_su_dung_thuoc_report/<int:month>/<int:year>/', views.bao_cao_su_dung_thuoc_report, name='bao_cao_su_dung_thuoc_report'),
     path('danhsachTBi/', views.danhsachTBi, name='danhsachTBi'),
     path('them_thietbi/', views.themTBi_new, name='them_thietbi'),
     path('sua_thietbi/<int:pk>/', views.suaTBi, name='sua_thietbi'),
