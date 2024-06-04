@@ -51,7 +51,7 @@ class FormPhieuKB(forms.Form):
 
 
 class FormthemThuocPKB(forms.Form):
-    tenThuoc = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
+    
     tenThuoc = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control"}), label="")
     donvi = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
     soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
