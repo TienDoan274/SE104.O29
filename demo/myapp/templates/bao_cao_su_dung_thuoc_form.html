@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Chọn Tháng và Năm{% endblock %}
+{% block content %}
+<h2>Chọn Tháng và Năm</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Xem Báo Cáo</button>
+</form>
+{% endblock %}

@@ -47,10 +47,11 @@ class FormPhieuKB(forms.Form):
     hoten = forms.CharField(disabled=True, required=True, widget=forms.TextInput(attrs={"placeholder": "Họ tên", "class": "form-control"}), label="")
     ngaykham = forms.DateField(disabled=True, required=True, widget=forms.DateInput(attrs={"type": "date", "class": "form-control"}), label="")
     trieuchung = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Triệu chứng", "class": "form-control"}), label="Symptoms")
-    dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Symptoms")
+    dudoan = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Dự đoán", "class": "form-control"}), label="Predictions")
 
 
 class FormthemThuocPKB(forms.Form):
+    
     tenThuoc = forms.ChoiceField(required=True, widget=forms.Select(attrs={"class": "form-control"}), label="")
     donvi = forms.ChoiceField(required=True, choices=[('vien', 'viên'), ('chai', 'chai')], widget=forms.Select(attrs={"class": "form-control"}), label="")
     soluong = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder":"Số lượng","class":"form-control"}), label="")
@@ -98,3 +99,6 @@ class thietbiForm(forms.ModelForm):
         widgets = {
             'import_date': forms.DateInput(attrs={'type': 'date'}),
         }
+class ReportForm(forms.Form):
+    month = forms.ChoiceField(choices=[(i, i) for i in range(1, 13)], label='Tháng')
+    year = forms.ChoiceField(choices=[(i, i) for i in range(2020, 2031)], label='Năm')
