@@ -50,6 +50,7 @@
     </tbody>
   </table>
 <a href="{% url 'add_thuocphieukb' idBenhnhan %}" class="btn btn-primary" role="button">Thêm thuốc</a>
+<a href="{% url 'xoa_phieukb' phieukb.id %}" class="btn btn-primary" role="button">Xóa</a>
 
 {% else %}
   <h1>Bạn chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>

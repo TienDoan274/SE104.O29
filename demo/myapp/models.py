@@ -38,5 +38,8 @@ class PKBthuoc(models.Model):
     soluong = models.IntegerField()
     cachdung = models.CharField(max_length=50)
     
-
-    
+class DefaultValues(models.Model):
+    max_patient = models.IntegerField(default=40)
+    cachdung = models.CharField(max_length = 500,default='A B C D')
+    loaibenh = models.CharField(max_length = 500,default='A B C D E')
+    tienkham = models.IntegerField(default=30000)

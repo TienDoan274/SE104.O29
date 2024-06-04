@@ -7,7 +7,7 @@ from datetime import date
 import datetime
 from django.http import JsonResponse
 
-
+default_values = DefaultValues.objects.get(id= 1)
 def home(request):
 	if request.method == 'POST':
 		username = request.POST['username']
@@ -51,13 +51,17 @@ def themBN(request,ngaykham):
     form = FormThemBN(request.POST or None)
     # form.initial['ngaykham'] = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
     form.initial['ngaykham'] = ngaykham
-
+    benhnhans = Benhnhan.objects.filter(ngaykham = ngaykham)
     if request.user.is_authenticated:
         if request.method == "POST":
-            if form.is_valid():
-                form.save()                
-                messages.success(request, "Record Added!")
-                return redirect('dsKhambenh',ngaykham = ngaykham)
+            if form.is_valid() :
+                if benhnhans.count()<3:
+                    form.save()                
+                    messages.success(request, "Record Added!")
+                    return redirect('dsKhambenh',ngaykham = ngaykham)
+                else:
+                    messages.success(request, "Không được khám quá 3 bệnh nhân")
+                    return redirect('dsKhambenh',ngaykham = ngaykham)
             else:
                 messages.error(request, "Record not added! Please correct errors.")
         return render(request, 'themBN.html', {'form': form,'ngaykham':ngaykham})
@@ -97,7 +101,6 @@ def delete_BN(request,id):
 
 def phieukb(request,id):
     target_BN = Benhnhan.objects.get(id = id)
-    # ngaykham = target_BN.ngaykham.strftime('%m/%d/%Y')
     ngaykham = target_BN.ngaykham
     try:
         phieukb = PhieuKB.objects.get(benhnhan = target_BN)
@@ -112,10 +115,11 @@ def phieukb(request,id):
         pkbthuocs = None
     return render(request, 'phieukb.html',{'pkbthuocs':pkbthuocs,'phieukb':phieukb,'idBenhnhan':target_BN.id,'ngaykham': ngaykham})
 
-
 def add_thuocphieukb(request,id):
     if request.user.is_authenticated:
         form = FormthemThuocPKB(request.POST or None)
+        form.fields['cachdung'].choices = [(cachdung,cachdung) for cachdung in default_values.cachdung.split(',')]
+
         benhnhan = Benhnhan.objects.get(id = id)
         phieukb = PhieuKB.objects.get(benhnhan = benhnhan)
         thuocs = Thuoc.objects.all().values('tenThuoc')
@@ -131,9 +135,6 @@ def add_thuocphieukb(request,id):
                     soluong = form.cleaned_data['soluong'],
                     cachdung = form.cleaned_data['cachdung']
                 )
-                # phieukbthuoc = PKBthuoc(phieukb = phieukb,donvi = form.cleaned_data['donvi'],soluong = form.cleaned_data['soluong'],cachdung = form.cleaned_data['cachdung'])
-                # phieukbthuoc.save()  
-                # phieukbthuoc.thuoc.add(thuoc)
                 messages.success(request, "Report Added!")
                 return redirect('phieukb',id = id)
         return render(request, 'add_thuocphieukb.html',{'form':form,'id':id})
@@ -143,6 +144,7 @@ def add_thuocphieukb(request,id):
 
 def add_phieukb(request,id):
     form = FormPhieuKB(request.POST or None)
+    form.fields['dudoan'].choices = [(loaibenh,loaibenh) for loaibenh in default_values.loaibenh.split(',')]
     benhnhan = Benhnhan.objects.get(id = id)
     form.initial['hoten'] = benhnhan.hoten
     form.initial['ngaykham'] = benhnhan.ngaykham
@@ -154,9 +156,6 @@ def add_phieukb(request,id):
                     trieuchung = form.cleaned_data['trieuchung'],
                     dudoan = form.cleaned_data['dudoan']
                 )
-                # record = form.save(commit=False)
-                # record.phieukb = phieukb
-                # record.save()
                 messages.success(request, "Report Added!")
                 return redirect('phieukb',id = id)
         return render(request, 'add_phieukb.html',{'form':form,'id':id})
@@ -164,12 +163,18 @@ def add_phieukb(request,id):
         messages.success(request, "You must be logged in to use that page!")
         return redirect('home')
 
+def xoa_phieukb(request,id):
+    phieukb = PhieuKB.objects.get(id = id)
+    id_benhnhan = phieukb.benhnhan.id
+    PKBthuocs = PKBthuoc.objects.filter(phieukb = phieukb)
+    phieukb.delete()
+    PKBthuocs.delete()
+    return redirect('phieukb',id = id_benhnhan)
+
 def xoa_pkbthuoc(request,id_pkbthuoc,id_benhnhan):
     pkbthuoc = PKBthuoc.objects.get(id = id_pkbthuoc)
     pkbthuoc.delete()
     return redirect('phieukb',id = id_benhnhan)
-
-    
 
 def thuoc(request):
     if request.user.is_authenticated:
@@ -228,11 +233,6 @@ def chonNgaydskb(request):
 def hoadon(request,id):
     if request.user.is_authenticated:
         target_BN = Benhnhan.objects.get(id = id)
-        # try:
-        #     hoadon = Hoadon.objects.get(benhnhan = target_BN)
-        # except:
-        #     hoadon = None
-        # if not hoadon:
         try:
             phieukb = PhieuKB.objects.get(benhnhan = target_BN)
         except:
@@ -274,3 +274,26 @@ def add_bill(request,pk):
     else:
         messages.success(request, "You must be logged in to use that page!")
         return redirect('hoadon',pk=1)	
+    
+def dsBenhnhan(request):
+    phieukbs = PhieuKB.objects.all()
+    return render(request, 'dsBenhnhan.html',{'phieukbs':phieukbs})
+
+def thaydoi(request):
+    
+    return render(request, 'thaydoi.html',{'default_values':default_values})
+
+def themloaibenh(request):
+    if request.method == 'POST':
+        loaibenh = request.POST['loaibenh']
+        default_values.loaibenh = default_values.loaibenh + ',' + str(loaibenh)
+        default_values.save()
+
+    return redirect(thaydoi)
+
+def themcachdung(request):
+    if request.method == 'POST':
+        cachdung = request.POST['cachdung']
+        default_values.cachdung = default_values.cachdung + ',' + str(cachdung)
+        default_values.save()
+    return redirect(thaydoi)

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Thay đổi{% endblock %}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <table class="table table-striped table-hover table-bordered table-light">
+        <thead>
+            <tr>
+                <th scope="col">Số lượng bệnh nhân tối đa</th>
+                <th scope="col">Các loại bệnh</th>
+                <th scope="col">Các cách dùng</th>
+                <th scope="col">Tiền khám</th>
+            </tr>
+        </thead>
+        <tbody id = 'body'>
+            <tr>
+                <td>{{ default_values.max_patient }}</td>
+                {% load split_filter %}
+                <td>{{ default_values.loaibenh|split:","|first }}</td>
+                <td>{{ default_values.cachdung|split:","|first }}</td>
+                <td>{{ default_values.tienkham }}</td>
+            </tr>
+            
+        </tbody>
+    </table>
+</div>
+<button type="submit" class="btn btn btn-success" onclick = "themloaibenh()">Thêm loại bệnh</button>
+<div id ="themloaibenh"></div>
+<br></br>
+<button type="submit" class="btn btn btn-success" onclick = "themcachdung()">Thêm cách dùng</button>
+<div id ="themcachdung"></div>
+
+<script>
+    cachdungs = "{{default_values.cachdung}}".split(',')
+    loaibenhs = "{{default_values.loaibenh}}".split(',')
+    body = document.getElementById("body")
+    console.log(cachdungs.length)
+    console.log(loaibenhs.length)
+
+    var i = 1
+    var j = 1
+    while(i < loaibenhs.length && j < cachdungs.length){
+        body.innerHTML += `<tr><td></td><td>${loaibenhs[i] }</td><td>${cachdungs[j] }</td><td></td></tr>`
+        i++
+        j++
+    }
+    while(i < loaibenhs.length){
+        body.innerHTML += `<tr><td></td><td>${loaibenhs[i] }</td><td></td><td></td></tr>`
+        i++
+    }
+    while(j < cachdungs.length){
+        body.innerHTML += `<tr><td></td><td></td><td>${cachdungs[j] }</td><td></td></tr>`
+        j++
+    }
+    function themloaibenh(){
+        element = document.getElementById('themloaibenh')
+        element.innerHTML =`<form method="post" action="/themloaibenh/">{% csrf_token %}
+            <input type="text" name="loaibenh">
+            <input type="submit" value="Submit"></form>`
+    }
+    function themcachdung(){
+        element = document.getElementById('themcachdung')
+        element.innerHTML =`<form method="post" action="/themcachdung/">{% csrf_token %}
+            <input type="text" name="cachdung">
+            <input type="submit" value="Submit"></form>`
+    }
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{%block title%}Bills{%endblock%}
+{% block content %}
+<div class="col-md-6 offset-md-3">
+    <h1>Danh sách bệnh nhân</h1>
+    {% if phieukbs %}
+    <table class="table table-striped table-hover table-bordered table-light">
+        <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Họ Tên</th>
+            <th scope="col">Ngày khám</th>
+            <th scope="col">Loại bệnh</th>
+            <th scope="col">Triệu chứng</th>    
+          </tr>
+        </thead>
+            <tbody>
+            {% for phieukb in phieukbs %}    
+
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ phieukb.benhnhan.hoten }}</td>
+                <td>{{ phieukb.benhnhan.ngaykham }}</td>
+                <td>{{ phieukb.dudoan }}</td>
+                <td>{{ phieukb.trieuchung }}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+    </table>
+    {% endif %}
+</div>
+{%endblock%}

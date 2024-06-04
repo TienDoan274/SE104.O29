@@ -21,9 +21,9 @@
 
       </tr>
     </thead>
-    {% for benhnhan in benhnhans %}
 
     <tbody>
+      {% for benhnhan in benhnhans %}
       <tr>
         <td>{{ forloop.counter }}</td>
         <td>{{ benhnhan.hoten }}</td>
@@ -36,8 +36,8 @@
         <td><a href="{% url 'delete_BN' benhnhan.id %}" class="btn btn-primary">Xóa</a></td>
 
       </tr>
+      {% endfor %}
     </tbody>
-    {% endfor %}
 
   </table>
 {% endif %}

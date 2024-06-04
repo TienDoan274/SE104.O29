@@ -12,6 +12,8 @@ urlpatterns = [
 
     path("phieukb/<int:id>/",views.phieukb, name ="phieukb"),
     path("add_phieukb/<int:id>/",views.add_phieukb, name ="add_phieukb"),
+    path("xoa_phieukb/<int:id>/",views.xoa_phieukb, name ="xoa_phieukb"),
+
     path("add_thuocphieukb/<int:id>/",views.add_thuocphieukb, name ="add_thuocphieukb"),
     path('xoa_pkbthuoc/<int:id_pkbthuoc>/<int:id_benhnhan>', views.xoa_pkbthuoc, name='xoa_pkbthuoc'),
 
@@ -24,6 +26,12 @@ urlpatterns = [
     path('delete_thuoc/<int:id>/', views.delete_thuoc, name='delete_thuoc'),
 
     path("chonNgaydskb/",views.chonNgaydskb, name ="chonNgaydskb"),
+    path("dsBenhnhan/",views.dsBenhnhan, name ="dsBenhnhan"),
+
+    path("thaydoi/",views.thaydoi, name ="thaydoi"),
+    path("themloaibenh/",views.themloaibenh, name ="themloaibenh"),
+    path("themcachdung/",views.themcachdung, name ="themcachdung"),
+
 
 ]
 

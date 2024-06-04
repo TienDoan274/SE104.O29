@@ -2,10 +2,13 @@
 <div class="navbar">
     <div class="navbar-left">
       <a href="{% url 'home' %}"><img src="https://cdn-icons-png.flaticon.com/128/3209/3209134.png" alt="Canduceus"></a>
-      <a href="#">Doctors</a>
-      <a href="{% url 'chonNgaydskb' %}">Patients</a>
-      <a href="#">Equipments</a>
+      {% comment %} <a href="#">Doctors</a> {% endcomment %}
+      <a href="{% url 'chonNgaydskb' %}">DS khám bệnh</a>
+      {% comment %} <a href="#">Equipments</a> {% endcomment %}
       <a href="{% url 'thuoc' %}">Medicine</a>
+      <a href="{% url 'dsBenhnhan' %}">DS bệnh nhân</a>
+      <a href="{% url 'thaydoi' %}">Thay đổi</a>
+
       {% comment %} <a href="{% url 'hoadon' %}">Bills</a> {% endcomment %}
       {% comment %} <a href="{% url 'medication_usage_report' %}">Medicine Report</a> {% endcomment %}
       {% comment %} <a href="{% url 'medication_stock_list' %}">Medicine List</a> {% endcomment %}
