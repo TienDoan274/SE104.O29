@@ -6,6 +6,9 @@ from .forms import *
 from datetime import date
 import datetime
 from django.http import JsonResponse
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDay
+from datetime import datetime
 
 
 def home(request):
@@ -303,3 +306,33 @@ def xoaTBi(request, pk):
         device.delete()
         return redirect('danhsachTBi')
     return render(request, 'xacnhanXoaTBi.html', {'device': device})
+
+
+def chonThangbaocao(request):
+    
+    return render(request, 'chonThangbaocao.html')
+
+def report_revenue_by_month(request, year, month):
+    # Get the start and end dates for the month
+    start_date = datetime(year, month, 1)
+    if month == 12:
+        end_date = datetime(year + 1, 1, 1)
+    else:
+        end_date = datetime(year, month + 1, 1)
+
+    # Filter the invoices by the start and end dates
+    invoices = Hoadon.objects.filter(benhnhan__ngaykham__range=(start_date, end_date)).select_related('benhnhan')
+
+
+    # Calculate the revenue by day
+    revenue_by_day = invoices.annotate(day=TruncDay('benhnhan__ngaykham')).values('day').annotate(total_revenue=Sum('tienthuoc')+Sum('tienkham'),patient_count=Count('benhnhan')).order_by('day')
+    
+    revenue_data = []
+    for revenue in revenue_by_day:
+        day = revenue['day'].strftime('%Y-%m-%d')
+        total_revenue = revenue['total_revenue']
+        patient_count = revenue['patient_count']
+        revenue_data.append({'day': day, 'total_revenue': total_revenue, 'patient_count': patient_count})
+    
+    
+    return render(request, 'report_revenue.html', {'revenue_data': revenue_data})

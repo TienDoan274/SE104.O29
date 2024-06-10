@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load bootstrap_filters %}
+
+{% block title %} Them sua thiet bi y te {% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Báo Cáo Doanh Thu Theo Tháng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9f5e9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Báo Cáo Doanh Thu Theo Tháng</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Ngày</th>
+                <th>Số Bệnh Nhân</th>
+                <th>Doanh Thu</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in revenue_data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ data.day }}</td>
+                <td>{{ data.patient_count }}</td>
+                <td>{{ data.total_revenue }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+{% endblock %}

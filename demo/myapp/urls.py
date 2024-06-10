@@ -24,10 +24,11 @@ urlpatterns = [
     path('delete_thuoc/<int:id>/', views.delete_thuoc, name='delete_thuoc'),
 
     path("chonNgaydskb/",views.chonNgaydskb, name ="chonNgaydskb"),
-
     #path("list_patient/",views.list_patient, name ="list_patient"),
     # path('all_patients/', views.all_patients, name='all_patients'),
 
+    path('chonThangbaocao/', views.chonThangbaocao, name='chonThangbaocao'),
+    path("report_revenue/<int:year>/<int:month>/",views.report_revenue_by_month, name = "revenue_report"),
 
     path('danhsachTBi/', views.danhsachTBi, name='danhsachTBi'),
     path('them_thietbi/', views.themTBi_new, name='them_thietbi'),
