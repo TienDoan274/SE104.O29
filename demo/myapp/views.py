@@ -6,7 +6,7 @@ from .forms import *
 from datetime import date
 import datetime
 from django.http import JsonResponse
-
+from django.db.models import Sum
 default_values = DefaultValues.objects.get(id= 1)
 def home(request):
 	if request.method == 'POST':
@@ -344,3 +344,30 @@ def suaTBi(request, pk):
     else:
         form = thietbiForm(instance=device)
     return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Sửa thiết bị y tế'}) 
+
+def bao_cao_su_dung_thuoc(request):
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            month = form.cleaned_data['month']
+            year = form.cleaned_data['year']
+            return redirect('bao_cao_su_dung_thuoc_report', month=month, year=year)
+    else:
+        form = ReportForm()
+    
+    return render(request, 'bao_cao_su_dung_thuoc_form.html', {'form': form})
+
+def bao_cao_su_dung_thuoc_report(request, month, year):
+    thuoc_data = PKBthuoc.objects.filter(
+        phieukb__benhnhan__ngaykham__month=month,
+        phieukb__benhnhan__ngaykham__year=year
+    ).values('thuoc__tenThuoc', 'donvi').annotate(
+        tong_soluong=Sum('soluong'),    
+    )
+    
+    context = {
+        'thuoc_data': thuoc_data,
+        'month': month,
+        'year': year
+    }
+    return render(request, 'bao_cao_su_dung_thuoc.html', context)

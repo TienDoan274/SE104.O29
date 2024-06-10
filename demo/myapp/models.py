@@ -22,7 +22,7 @@ class Hoadon(models.Model):
 class PhieuKB(models.Model):
     benhnhan = models.OneToOneField(Benhnhan,on_delete=models.CASCADE)
     trieuchung = models.CharField(max_length=100)
-    dudoan = models.CharField(max_length=100) 
+    dudoan = models.CharField(max_length=100)
     
 class Thuoc(models.Model):
     tenThuoc = models.CharField(max_length=50)

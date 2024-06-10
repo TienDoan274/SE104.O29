@@ -96,3 +96,6 @@ class thietbiForm(forms.ModelForm):
         widgets = {
             'import_date': forms.DateInput(attrs={'type': 'date'}),
         }
+class ReportForm(forms.Form):
+    month = forms.ChoiceField(choices=[(i, i) for i in range(1, 13)], label='Tháng')
+    year = forms.ChoiceField(choices=[(i, i) for i in range(2020, 2031)], label='Năm')

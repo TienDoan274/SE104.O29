@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Báo Cáo Sử Dụng Thuốc{% endblock %}
+{% block content %}
+<h2>Báo Cáo Sử Dụng Thuốc</h2>
+<p>Tháng: {{ month }}/{{ year }}</p>
+<table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">Thuốc</th>
+            <th scope="col">Đơn Vị Tính</th>
+            <th scope="col">Số Lượng</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in thuoc_data %}
+            <tr>
+                <td>{{ item.thuoc__tenThuoc }}</td>
+                <td>{{ item.donvi }}</td>
+                <td>{{ item.tong_soluong }}</td>
+                
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'bao_cao_su_dung_thuoc' %}" class="btn btn-primary" role="button">Back</a>
+{% endblock %}
