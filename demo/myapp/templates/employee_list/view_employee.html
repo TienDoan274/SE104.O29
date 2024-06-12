@@ -1,0 +1,54 @@
+<!-- list_employees_by_role.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Danh sách {{ role_display_name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Danh sách {{ role_display_name }}</h2>
+    <table class="table table-striped">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{% url 'register_employee' role %}" class="btn btn-primary">Thêm nhân viên</a>
+        </div>
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">STT</th>
+                <th scope="col">Họ</th>
+                <th scope="col">Tên</th>
+                <th scope="col">Ngày sinh</th>
+                <th scope="col">Địa chỉ</th>
+                <th scope="col">Ngày vào làm</th>
+                <th scope="col">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ employee.first_name }}</td>
+                <td>{{ employee.last_name }}</td>
+                <td>{{ employee.date_of_birth }}</td>
+                <td>{{ employee.address }}</td>
+                <td>{{ employee.start_date }}</td>
+                <td>
+                    <a href="{% url 'edit_employee' employee.id role %}" class="btn btn-sm btn-warning">Sửa</a>
+                    <a href="{% url 'delete_employee' employee.id role %}" class="btn btn-sm btn-danger" onclick="return confirmDelete(this);">Xóa</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+function confirmDelete(link) {
+    if (confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+</script>
+
+{% endblock %}

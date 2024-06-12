@@ -215,3 +215,41 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+
+.avatar {
+  vertical-align: middle;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer; /* Đổi con trỏ thành dạng bàn tay khi di chuột qua avatar */
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  left: -50px;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 9999;
+  
+}
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+}
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.dropdown:hover .avatar {
+  background-color: #ddd;
+}

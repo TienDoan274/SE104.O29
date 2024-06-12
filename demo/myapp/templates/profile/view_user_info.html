@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}User Profile{% endblock %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Information</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <!-- Bổ sung các tệp tĩnh khác nếu cần -->
+</head>
+<body>
+
+<h1>User Information</h1>
+
+<div class="col-md-6 offset-md-3">
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+    <p><strong>First Name:</strong> {{ user.first_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Day of birth:</strong> {{ user.date_of_birth }}</p>
+    <p><strong>Gender:</strong> {{ user.gender }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    <p><strong>Role:</strong> {{ user.role }}</p>
+    <p><strong>Start Date:</strong> {{ user.start_date }}</p>
+</div>
+
+<a href="{% url 'update_user_info' %}" class="btn btn-secondary">Update</a>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+
+</body>
+</html>
+{% endblock %}

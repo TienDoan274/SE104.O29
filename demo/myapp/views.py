@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import PasswordChangeView
+from django.urls import reverse_lazy
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from .forms import *
@@ -9,7 +12,7 @@ from django.http import JsonResponse
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncDay
 from datetime import datetime
-
+from .decorators import role_required
 
 def home(request):
 	if request.method == 'POST':
@@ -29,6 +32,7 @@ def logout_user(request):
     logout(request)
     messages.success(request, "You have been logged out")
     return redirect('home')
+@role_required('hr_manager')
 def register_user(request):
 	if request.method == 'POST':
 		form = SignUpForm(request.POST)
@@ -44,12 +48,107 @@ def register_user(request):
 		form = SignUpForm()
 		return render(request, 'register.html',{'form': form})
 	return render(request, 'register.html',{'form': form})
+
+class ChangePasswordView(PasswordChangeView):
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('home')
+    template_name = 'change_password.html'
+
+# Profile
+def view_user_info(request):
+    user = request.user
+    user_data = {
+        'username': user.username,
+        'email': user.email,
+        'start_date': user.start_date,
+        'address': user.address,
+        'role': user.role,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+    }
+    info_form = ProfileForm(initial=user_data) 
+    return render(request, 'profile/view_user_info.html', {'info_form': info_form})
+
+def edit_user_info(request):
+    if request.method == 'POST':
+        # Lấy dữ liệu từ biểu mẫu chỉnh sửa
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+        new_address = request.POST.get('address')
+        
+        
+        # Lấy thông tin người dùng hiện tại
+        user = request.user
+
+        # Cập nhật thông tin người dùng nếu có dữ liệu mới
+        if new_username:
+            user.username = new_username
+        if new_email:
+            user.email = new_email
+        if new_address:
+            user.address = new_address
+        
+
+        # Lưu lại thông tin người dùng
+        user.save()
+
+        # Quay lại trang hoặc chuyển hướng đến một trang khác
+        return redirect('view_user_info')  # Thay 'profile' bằng tên URL của trang profile của bạn
+
+    else:
+        # Hiển thị trang chỉnh sửa thông tin người dùng
+        return render(request, 'profile/update_user_info.html')
+
+# Employee list
+def employee_role_selection(request):
+    return render(request, 'employee_list/employee_role_selection.html')
+
+def list_employees_by_role(request, role):
+    employees = CustomUser.objects.filter(role=role)
+    role_display_name = dict(CustomUser.ROLE_CHOICES).get(role, 'Nhân viên')
+    return render(request, 'employee_list/view_employee.html', {'employees': employees, 'role': role, 'role_display_name': role_display_name})
+
+def edit_employee(request, pk, role):
+    user = get_object_or_404(CustomUser, pk=pk)
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, instance=user)
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect('view_employees_by_role', role=role)
+    else:
+        profile_form = ProfileForm(instance=user)
+    return render(request, 'employee_list/edit_employee.html', {'profile_form': profile_form})
+
+def delete_employee(request, pk,role):
+    user = get_object_or_404(CustomUser, pk=pk)
+    if user == request.user:
+        messages.error(request, "Bạn không thể xóa tài khoản đang sử dụng.")
+        return redirect('view_employees_by_role', role=role)
+    user.delete()
+    return redirect('view_employees_by_role', role=role)
+
+@role_required('hr_manager')
+def register_employee(request, role):
+    if request.method == 'POST':
+        form = EmployeeSignUpForm(request.POST)
+        if form.is_valid():
+            print(type(form.instance.role))
+            print(type(role))
+            form.instance.role = role     
+            form.save()
+            return redirect('view_employees_by_role', role=role)
+    else:
+        form = EmployeeSignUpForm()
+    return render(request, 'employee_list/add_employee.html', {'form': form})
+
+
+# Kham benh
 def dsKhambenh(request,ngaykham):
     if request.user.is_authenticated:
         # ngaykham = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
         benhnhans = Benhnhan.objects.filter(ngaykham = ngaykham)
         return render(request, 'dsKhambenh.html',{'benhnhans':benhnhans,'ngaykham':ngaykham})
-
+@role_required('receptionist','doctor')
 def themBN(request,ngaykham):
     form = FormThemBN(request.POST or None)
     # form.initial['ngaykham'] = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
@@ -67,7 +166,8 @@ def themBN(request,ngaykham):
     else:
         messages.error(request, "You must be logged in to use that page!")
         return redirect('home')
-
+    
+@role_required('receptionist','doctor')
 def update_BN(request,id):
     if request.user.is_authenticated:
         target_BN = Benhnhan.objects.get(id = id)
@@ -90,7 +190,8 @@ def update_BN(request,id):
     else:
         messages.error(request, "You must be logged in to use that page!")
         return redirect('home')
-
+    
+@role_required('receptionist','doctor')
 def delete_BN(request,id):
     target_BN = Benhnhan.objects.get(id = id)
     ngaykham = target_BN.ngaykham
@@ -219,6 +320,7 @@ def update_thuoc(request):
     
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
+@role_required('warehouse_manager')
 def danhsachTBi(request):
     devices = thietbiYte.objects.all()
     return render(request, 'danhsachTBi.html', {'devices': devices})

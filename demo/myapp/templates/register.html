@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 {%block title%}Register Page{%endblock%}
 {% block content %}
-
-
 <div class="col-md-6 offset-md-3">
 <h1>Register</h1>
 <br/>
@@ -30,5 +29,5 @@
 
 
 </div>
-
+<script src="{% static 'JavaScript/signup_validation.js' %}"></script>
 {% endblock %}
