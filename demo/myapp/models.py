@@ -1,10 +1,34 @@
 # models.py
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator,MaxValueValidator
 from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import datetime
+
+
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = [
+        ('receptionist', 'Lễ tân'),
+        ('doctor', 'Bác sĩ'),
+        ('hr_manager', 'Quản lý nhân sự'),
+        ('warehouse_manager', 'Quản lý kho'),
+    ]
+
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+    ]
+    
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    start_date = models.DateField(null=True, blank=True)  # Ngày vào làm
+    address = models.CharField(max_length=255, blank=True)  # Địa chỉ
 
 
 class Benhnhan(models.Model):

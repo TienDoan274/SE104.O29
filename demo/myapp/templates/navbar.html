@@ -1,8 +1,11 @@
 {%if user.is_authenticated %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+<script src="{% static 'JavaScript/dropdown.js' %}"></script>
 <div class="navbar">
     <div class="navbar-left">
       <a href="{% url 'home' %}"><img src="https://cdn-icons-png.flaticon.com/128/3209/3209134.png" alt="Canduceus"></a>
-      <a href="#">Doctors</a>
+      <a href="{% url 'employee_role_selection' %}">Employee List</a>
       <a href="{% url 'chonNgaydskb' %}">Patients</a>
       <a href="{% url 'danhsachTBi' %}">Equipments</a>
       <a href="{% url 'thuoc' %}">Medicine</a>
@@ -16,9 +19,14 @@
 
     </div>
     <div class="navbar-right">
-      <a href="{% url 'logout' %}" class="logout">Logout</a>
-      <div class="search">
-        <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/149/149852.png" alt=""></a>
+      
+      <div class="dropdown">
+        <img src="{% if user.gender == 'male' %}{% static 'images/img_avatar_male.png' %}{% else %}{% static 'images/img_avatar_female.png' %}{% endif %}" alt="Avatar" class="avatar">
+        <div class="dropdown-content">
+          <a href="{% url 'view_user_info' %}">Profile</a>
+          <a href="{% url 'change_password' %}">Change Password</a>
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
       </div>
     </div>
 </div>

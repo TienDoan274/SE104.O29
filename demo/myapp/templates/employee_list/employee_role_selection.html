@@ -1,0 +1,17 @@
+<!-- employee_role_selection.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Chọn vai trò nhân viên{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Chọn danh sách </h2>
+    <div class="d-flex justify-content-around">
+        <a href="{% url 'view_employees_by_role' 'receptionist' %}" class="btn btn-primary">Lễ tân</a>
+        <a href="{% url 'view_employees_by_role' 'doctor' %}" class="btn btn-primary">Bác sĩ</a>
+        <a href="{% url 'view_employees_by_role' 'hr_manager' %}" class="btn btn-primary">Quản lý nhân sự</a>
+        <a href="{% url 'view_employees_by_role' 'warehouse_manager' %}" class="btn btn-primary">Quản lý kho</a>
+    </div>
+</div>
+{% endblock %}
