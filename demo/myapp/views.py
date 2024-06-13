@@ -8,6 +8,11 @@ import datetime
 from django.http import JsonResponse
 from django.db.models import Sum
 default_values = DefaultValues.objects.get(id= 1)
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDay
+from datetime import datetime
+
+
 def home(request):
 	if request.method == 'POST':
 		username = request.POST['username']
@@ -55,6 +60,10 @@ def themBN(request,ngaykham):
     if request.user.is_authenticated:
         if request.method == "POST":
             if form.is_valid() :
+                ten_benh_nhan = form.cleaned_data['hoten']
+                # if benhnhans.filter(hoten=ten_benh_nhan).exists():
+                    
+                    
                 if benhnhans.count()<int(default_values.max_patient):
                     form.save()                
                     messages.success(request, "Record Added!")
@@ -98,6 +107,13 @@ def delete_BN(request,id):
     target_BN.delete()
     return redirect('dsKhambenh',ngaykham = ngaykham)
 
+def check_patient(request):
+    ho_ten = request.GET.get('hoTen', None)
+    ngay_kham = request.GET.get('ngayKham', None)
+    data = {
+        'is_taken': Benhnhan.objects.filter(hoten=ho_ten, ngaykham=ngay_kham).exists()
+    }
+    return JsonResponse(data)
 
 def phieukb(request,id):
     target_BN = Benhnhan.objects.get(id = id)
@@ -137,7 +153,7 @@ def add_thuocphieukb(request,id):
                 )
                 messages.success(request, "Report Added!")
                 return redirect('phieukb',id = id)
-        return render(request, 'add_thuocphieukb.html',{'form':form,'id':id})
+        return render(request, 'add_thuocphieukb.html',{'form':form,'id':id,'sua':0})
     else:
         messages.success(request, "You must be logged in to use that page!")
         return redirect('home')
@@ -158,7 +174,7 @@ def add_phieukb(request,id):
                 )
                 messages.success(request, "Report Added!")
                 return redirect('phieukb',id = id)
-        return render(request, 'add_phieukb.html',{'form':form,'id':id})
+        return render(request, 'add_phieukb.html',{'form':form,'id':id,'sua':0})
     else:
         messages.success(request, "You must be logged in to use that page!")
         return redirect('home')
@@ -171,10 +187,69 @@ def xoa_phieukb(request,id):
     PKBthuocs.delete()
     return redirect('phieukb',id = id_benhnhan)
 
+def sua_phieukb(request,id_phieukb):
+    phieukb = PhieuKB.objects.get(id = id_phieukb)
+    form = FormPhieuKB(request.POST or None)
+    form.fields['dudoan'].choices = [(loaibenh,loaibenh) for loaibenh in default_values.loaibenh.split(',')]
+    id_benhnhan = phieukb.benhnhan.id
+    form.initial['hoten'] = phieukb.benhnhan.hoten
+    form.initial['ngaykham'] = phieukb.benhnhan.ngaykham
+    form.initial['trieuchung'] = phieukb.trieuchung
+    form.initial['dudoan'] = phieukb.dudoan
+
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if form.is_valid():
+                phieukb2,created = PhieuKB.objects.update_or_create(
+                    benhnhan = phieukb.benhnhan,
+                    defaults={'trieuchung':form.cleaned_data['trieuchung'],
+                    'dudoan':form.cleaned_data['dudoan']}
+                )
+                phieukb2.save()
+                # messages.success(request, "Report Added!")
+                return redirect('phieukb',id = id_benhnhan)
+        return render(request, 'add_phieukb.html',{'form':form,'id':id_benhnhan,'sua':1})
+    else:
+        messages.success(request, "You must be logged in to use that page!")
+        return redirect('home')
+
 def xoa_pkbthuoc(request,id_pkbthuoc,id_benhnhan):
     pkbthuoc = PKBthuoc.objects.get(id = id_pkbthuoc)
     pkbthuoc.delete()
     return redirect('phieukb',id = id_benhnhan)
+
+def sua_pkbthuoc(request,id_pkbthuoc,id_benhnhan):
+    if request.user.is_authenticated:
+        pkbthuoc = PKBthuoc.objects.get(id = id_pkbthuoc)
+        form = FormthemThuocPKB(request.POST or None)
+        form.fields['cachdung'].choices = [(cachdung,cachdung) for cachdung in default_values.cachdung.split(',')]
+
+        benhnhan = Benhnhan.objects.get(id = id_benhnhan)
+        phieukb = PhieuKB.objects.get(benhnhan = benhnhan)
+        thuocs = Thuoc.objects.all().values('tenThuoc')
+        choices = [(thuoc['tenThuoc'], thuoc['tenThuoc']) for thuoc in thuocs]
+        form.fields['tenThuoc'].choices = choices
+        form.fields['tenThuoc'].initial = pkbthuoc.thuoc.tenThuoc
+        form.fields['donvi'].initial = pkbthuoc.donvi
+        form.fields['soluong'].initial = pkbthuoc.soluong
+        form.fields['cachdung'].initial = pkbthuoc.cachdung
+        if request.method == "POST":
+            if form.is_valid():
+                pkbthuoc.delete()
+                thuoc = Thuoc.objects.get(tenThuoc = form.cleaned_data['tenThuoc'])
+                phieukbthuoc = PKBthuoc.objects.create(
+                    phieukb = phieukb,
+                    thuoc = thuoc,
+                    donvi = form.cleaned_data['donvi'],
+                    soluong = form.cleaned_data['soluong'],
+                    cachdung = form.cleaned_data['cachdung']
+                )
+                messages.success(request, "Report Added!")
+                return redirect('phieukb',id = id_benhnhan)
+        return render(request, 'add_thuocphieukb.html',{'form':form,'id':id_benhnhan,'sua':1})
+    else:
+        messages.success(request, "You must be logged in to use that page!")
+        return redirect('home')
 
 def thuoc(request):
     if request.user.is_authenticated:
@@ -371,3 +446,32 @@ def bao_cao_su_dung_thuoc_report(request, month, year):
         'year': year
     }
     return render(request, 'bao_cao_su_dung_thuoc.html', context)
+
+def chonThangbaocao(request):
+    
+    return render(request, 'chonThangbaocao.html')
+
+def report_revenue_by_month(request, year, month):
+    # Get the start and end dates for the month
+    start_date = datetime(year, month, 1)
+    if month == 12:
+        end_date = datetime(year + 1, 1, 1)
+    else:
+        end_date = datetime(year, month + 1, 1)
+
+    # Filter the invoices by the start and end dates
+    invoices = Hoadon.objects.filter(benhnhan__ngaykham__range=(start_date, end_date)).select_related('benhnhan')
+
+
+    # Calculate the revenue by day
+    revenue_by_day = invoices.annotate(day=TruncDay('benhnhan__ngaykham')).values('day').annotate(total_revenue=Sum('tienthuoc')+Sum('tienkham'),patient_count=Count('benhnhan')).order_by('day')
+    
+    revenue_data = []
+    for revenue in revenue_by_day:
+        day = revenue['day'].strftime('%Y-%m-%d')
+        total_revenue = revenue['total_revenue']
+        patient_count = revenue['patient_count']
+        revenue_data.append({'day': day, 'total_revenue': total_revenue, 'patient_count': patient_count})
+    
+    
+    return render(request, 'report_revenue.html', {'revenue_data': revenue_data})

@@ -32,11 +32,11 @@ class SignUpForm(UserCreationForm):
             self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
 
 class FormThemBN(forms.ModelForm):
-    hoten = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Họ tên", "class": "form-control"}), label="Họ tên")
+    hoten = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Họ tên", "class": "form-control",'id':'hoten'}), label="Họ tên")
     gioitinh = forms.ChoiceField(required=True, choices=[('M', 'Nam'), ('F', 'Nữ')], widget=forms.Select(attrs={"class": "form-control"}), label="Giới tính")
     namsinh = forms.IntegerField(required=True, widget=forms.TextInput(attrs={"placeholder": "Năm sinh", "class": "form-control"}), label="Năm sinh")
     diachi = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Địa chỉ", "class": "form-control"}), label="Địa chỉ")
-    ngaykham = forms.DateField(disabled=True,required=True, widget=forms.DateInput(attrs={"type": "date", "class": "form-control","readonly": "readonly"}), label="Ngày khám")
+    ngaykham = forms.DateField(disabled=True,required=True, widget=forms.DateInput(attrs={'id':'ngaykham',"type": "date", "class": "form-control","readonly": "readonly"}), label="Ngày khám")
 
     class Meta:
         model = Benhnhan

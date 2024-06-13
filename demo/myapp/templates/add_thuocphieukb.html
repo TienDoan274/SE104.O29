@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {%block title%}Bills{%endblock%}
 {% block content %}
+{% if sua == 0 %}
 <div class="col-md-6 offset-md-3">
     <h1>Thêm thuốc</h1>
     <br>
@@ -14,4 +15,20 @@
     </form>
 
 </div>
+{% else %}
+<div class="col-md-6 offset-md-3">
+    <h1>Sửa thuốc</h1>
+    <br>
+    <form method = "POST">
+        {% csrf_token %}
+        {{form.as_p}}
+
+        
+        <button type="submit" class="btn btn btn-success">Cập nhật</button>
+        <a href="{% url 'phieukb' id %}" class="btn btn-secondary">Back</a>
+    </form>
+
+</div>
+{% endif %}
+
 {%endblock%}

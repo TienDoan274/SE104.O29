@@ -22,27 +22,14 @@
         {% for thuoc in thuocs %}
         <tr>
             <td>{{ forloop.counter }}</td>
-            <td>{{ thuoc.tenThuoc }}</td>
-            <td>
-                <span id="gia-theo-vien-{{ thuoc.id }}">{{ thuoc.giatheovien }}</span>
-                <button onclick="decreasePillsPrice({{ thuoc.id }})">-</button>
-                <button onclick="increasePillsPrice({{ thuoc.id }})">+</button>
-            </td>
-            <td>
-                <span id="gia-theo-chai-{{ thuoc.id }}">{{ thuoc.giatheochai }}</span>
-                <button onclick="decreaseBottlesPrice({{ thuoc.id }})">-</button>
-                <button onclick="increaseBottlesPrice({{ thuoc.id }})">+</button>
-            </td>
-            <td>
-                <span id="so-vien-{{ thuoc.id }}">{{ thuoc.soviencon }}</span>
-                <button onclick="decreasePills({{ thuoc.id }})">-</button>
-                <button onclick="increasePills({{ thuoc.id }})">+</button>
-            </td>
-            <td>
-                <span id="so-chai-{{ thuoc.id }}">{{ thuoc.sochaicon }}</span>
-                <button onclick="decreaseBottles({{ thuoc.id }})">-</button>
-                <button onclick="increaseBottles({{ thuoc.id }})">+</button>
-            </td>
+            <td class="tenThuoc" id="ten-thuoc-{{ thuoc.id }}" onclick="changetenThuoc({{ thuoc.id }})" style="cursor: pointer; color: blue;">{{ thuoc.tenThuoc }}</td>            
+            <td  id="gia-vien-{{ thuoc.id }}" onclick="changegiavien({{ thuoc.id }})" style="cursor: pointer; color: blue;">{{ thuoc.giatheovien }}</td>            
+            <td  id="gia-chai-{{ thuoc.id }}" onclick="changegiachai({{ thuoc.id }})" style="cursor: pointer; color: blue;">{{ thuoc.giatheochai }}</td>            
+
+            <td  id="so-vien-{{ thuoc.id }}" onclick="changesovien({{ thuoc.id }})" style="cursor: pointer; color: blue;">{{ thuoc.soviencon }}</td>            
+
+            <td  id="so-chai-{{ thuoc.id }}" onclick="changesochai({{ thuoc.id }})" style="cursor: pointer; color: blue;">{{ thuoc.sochaicon }}</td>            
+
             <td><a href="{% url 'delete_thuoc' thuoc.id %}" class="btn btn-primary">Xóa</a></td>
 
         </tr>
@@ -79,77 +66,76 @@
               }
           });
     }
-    function decreasePills(thuocId) {
-        var soVienElement = document.getElementById("so-vien-" + thuocId);
-        var soVien = parseInt(soVienElement.innerText);
-        if (soVien > 0) {
-            soVien -= 1;
-            soVienElement.innerText = soVien;
-            sendUpdateRequest(thuocId, 'soviencon', soVien);
+    
+    function changesovien(thuocId) {
+        var element = document.getElementById("so-vien-" + thuocId);
+        var sovien = element.innerText;
+        var sovienNew = prompt("Hãy nhập vào số viên thuốc mới :", sovien);
+        if (sovienNew !== null && sovienNew !== "" && sovienNew !== sovien && sovienNew>0) {
+            var confirmChange = confirm("Bạn có muốn thay đổi số viên thuốc không ?");
+            if (confirmChange) {
+                element.innerText = sovienNew;
+                sendUpdateRequest(thuocId, 'soviencon', sovienNew);
+            }
         }
     }
 
-    function increasePills(thuocId) {
-        var soVienElement = document.getElementById("so-vien-" + thuocId);
-        var soVien = parseInt(soVienElement.innerText);
-        soVien += 1;
-        soVienElement.innerText = soVien;
-        sendUpdateRequest(thuocId, 'soviencon', soVien);
-    }
-
-    // Tương tự cho các hàm khác
-    function decreaseBottles(thuocId) {
-        var soChaiElement = document.getElementById("so-chai-" + thuocId);
-        var soChai = parseInt(soChaiElement.innerText);
-        if (soChai > 0) {
-            soChai -= 1;
-            soChaiElement.innerText = soChai;
-            sendUpdateRequest(thuocId, 'sochaicon', soChai);
+    function changesochai(thuocId) {
+        var element = document.getElementById("so-chai-" + thuocId);
+        var sochai = element.innerText;
+        var sochaiNew = prompt("Hãy nhập vào số chai thuốc mới :", sochai);
+        if (sochaiNew !== null && sochaiNew !== "" && sochaiNew !== sochai && sochaiNew>0) {
+            var confirmChange = confirm("Bạn có muốn thay đổi số chai thuốc không ?");
+            if (confirmChange) {
+                element.innerText = sochaiNew;
+                sendUpdateRequest(thuocId, 'sochaicon', sochaiNew);
+            }
         }
     }
 
-    function increaseBottles(thuocId) {
-        var soChaiElement = document.getElementById("so-chai-" + thuocId);
-        var soChai = parseInt(soChaiElement.innerText);
-        soChai += 1;
-        soChaiElement.innerText = soChai;
-        sendUpdateRequest(thuocId, 'sochaicon', soChai);
-    }
-
-    function decreasePillsPrice(thuocId) {
-        var giaTheoVienElement = document.getElementById("gia-theo-vien-" + thuocId);
-        var giaTheoVien = parseInt(giaTheoVienElement.innerText);
-        if (giaTheoVien > 0) {
-            giaTheoVien -= 1;
-            giaTheoVienElement.innerText = giaTheoVien;
-            sendUpdateRequest(thuocId, 'giatheovien', giaTheoVien);
+    function changetenThuoc(thuocId) {
+        var element = document.getElementById("ten-thuoc-" + thuocId);
+        var tenThuocOld = element.innerText;
+        var tenThuocNew = prompt("Hãy nhập tên thuốc mới vào :", tenThuocOld);
+        var tenThuocs = document.getElementsByClassName("tenThuoc");
+        
+        if (tenThuocNew!== null && tenThuocNew !== "" && tenThuocNew !== tenThuocOld) {
+            for (tenThuoc of tenThuocs){
+                if (tenThuocNew === tenThuoc.innerText){
+                    alert("Tên thuốc đã tồn tại!");
+                    return;
+                }
+            }
+            var confirmChange = confirm("Bạn có muốn thay đổi tên thuốc không ?");
+            if (confirmChange) {
+                element.innerText = tenThuocNew;
+                sendUpdateRequest(thuocId, 'tenThuoc', tenThuocNew);
+            }
         }
     }
-
-    function increasePillsPrice(thuocId) {
-        var giaTheoVienElement = document.getElementById("gia-theo-vien-" + thuocId);
-        var giaTheoVien = parseInt(giaTheoVienElement.innerText);
-        giaTheoVien += 1;
-        giaTheoVienElement.innerText = giaTheoVien;
-        sendUpdateRequest(thuocId, 'giatheovien', giaTheoVien);
-    }
-
-    function decreaseBottlesPrice(thuocId) {
-        var giaTheoChaiElement = document.getElementById("gia-theo-chai-" + thuocId);
-        var giaTheoChai = parseInt(giaTheoChaiElement.innerText);
-        if (giaTheoChai > 0) {
-            giaTheoChai -= 1;
-            giaTheoChaiElement.innerText = giaTheoChai;
-            sendUpdateRequest(thuocId, 'giatheochai', giaTheoChai);
+    function changegiavien(thuocId) {
+        var element = document.getElementById("gia-vien-" + thuocId);
+        var giatheovien = element.innerText;
+        var giatheovienNew = prompt("Hãy nhập vào giá thuốc theo viên mới :", giatheovien);
+        if (giatheovienNew !== null && giatheovienNew !== "" && giatheovienNew !== giatheovien && giatheovienNew>0) {
+            var confirmChange = confirm("Bạn có muốn thay đổi giá thuốc theo viên không ?");
+            if (confirmChange) {
+                element.innerText = giatheovienNew;
+                sendUpdateRequest(thuocId, 'giatheovien', giatheovienNew);
+            }
         }
     }
-
-    function increaseBottlesPrice(thuocId) {
-        var giaTheoChaiElement = document.getElementById("gia-theo-chai-" + thuocId);
-        var giaTheoChai = parseInt(giaTheoChaiElement.innerText);
-        giaTheoChai += 1;
-        giaTheoChaiElement.innerText = giaTheoChai;
-        sendUpdateRequest(thuocId, 'giatheochai', giaTheoChai);
+    function changegiachai(thuocId) {
+        var element = document.getElementById("gia-chai-" + thuocId);
+        var giatheochai = element.innerText;
+        var giatheochaiNew = prompt("Hãy nhập vào giá thuốc theo chai mới :", giatheochai);
+        if (giatheochaiNew !== null && giatheochaiNew !== "" && giatheochaiNew !== giatheochai && giatheochaiNew>0) {
+            var confirmChange = confirm("Bạn có muốn thay đổi giá thuốc theo chai không ?");
+            if (confirmChange) {
+                element.innerText = giatheochaiNew;
+                sendUpdateRequest(thuocId, 'giatheochai', giatheochaiNew);
+            }
+        }
     }
 </script>
 

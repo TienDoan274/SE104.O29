@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Add Medical Report Page{% endblock %}
 {% block content %}
+{% if sua == 0 %}
 <div class="col-md-6 offset-md-3">
     <h1>Tạo phiếu khám bệnh</h1>
     <br>
@@ -12,6 +13,21 @@
         <a href="{% url 'phieukb' id %}" class="btn btn-secondary">Back</a>
     </form>
 </div>
+
+{% else %}
+<div class="col-md-6 offset-md-3">
+    <h1>Sửa phiếu khám bệnh</h1>
+    <br>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}            
+        
+        <button type="submit" class="btn btn btn-success">Cập nhật</button>
+        <a href="{% url 'phieukb' id %}" class="btn btn-secondary">Back</a>
+    </form>
+</div>
+
+{% endif %}
 
 
 {% endblock %}

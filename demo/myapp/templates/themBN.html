@@ -4,13 +4,39 @@
 <div class="col-md-6 offset-md-3">
     <h1>Thêm bệnh nhân</h1>
     <br>
-    <form id ='themBN' method = "POST" action="{% url 'themBN' ngaykham %}">
+    <form id ='themBN' method = "POST" >
         {% csrf_token %}
         {{form.as_p}}
 
-        <button type="submit" class="btn btn btn-success">Thêm</button>
+        <button id="themBNSave" type="submit" class="btn btn btn-success">Thêm</button>
         <a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-secondary">Back</a>
     </form>
-    
 </div>
+<script >
+document.getElementById('themBN').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    var hoTen = document.getElementById('hoten').value;
+    var ngayKham = document.getElementById('ngaykham').value;
+    console.log(hoTen)
+    $.ajax({
+        url: '/kiem-tra-benh-nhan/',
+        data: {
+            'hoTen': hoTen,
+            'ngayKham': ngayKham
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.is_taken) {
+                var confirmAdd = confirm("Bệnh nhân đã tồn tại trong ngày khám. Bạn có muốn thêm bệnh nhân này không?");
+                if (confirmAdd) {
+                    document.getElementById('themBN').submit();
+                }
+            } else {
+                document.getElementById('themBN').submit();
+            }
+        }
+    });
+});
+</script>
 {%endblock%}
