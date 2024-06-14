@@ -3,11 +3,13 @@
 {% block content %}
 <form id="dateForm">
     <label for="ngaykham">Ngày khám:</label>
-    <input type="date" id="ngaykham" name="date">
+    <input type="date" id="ngaykham" name="date" >
     <br><br>
     <input type="submit" value="Gửi">
 </form>
 <script>
+    document.getElementById('ngaykham').valueAsDate = new Date();
+
     document.getElementById('dateForm').addEventListener('submit', function(event) {
         event.preventDefault(); 
 

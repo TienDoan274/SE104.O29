@@ -48,7 +48,19 @@ urlpatterns = [
     path('danhsachTBi/', views.danhsachTBi, name='danhsachTBi'),
     path('them_thietbi/', views.themTBi_new, name='them_thietbi'),
     path('sua_thietbi/<int:pk>/', views.suaTBi, name='sua_thietbi'),
-    path('xoa_thietbi<int:pk>/', views.xoaTBi, name='xoa_thietbi')
+    path('xoa_thietbi<int:pk>/', views.xoaTBi, name='xoa_thietbi'),
+
+
+    path('view_user_info/', views.view_user_info, name='view_user_info'),
+    path('update_user_info/', views.edit_user_info, name='update_user_info'),
+
+    path('employees/role-selection/', views.employee_role_selection, name='employee_role_selection'),
+    path('employees/list/<str:role>/', views.list_employees_by_role, name='view_employees_by_role'),
+    path('register-employee/<str:role>/', views.register_employee, name='register_employee'),
+    path('edit-profile/<int:pk>/<str:role>/', views.edit_employee, name='edit_employee'),
+    path('delete-employee/<int:pk>/<str:role>/', views.delete_employee, name='delete_employee'),
+
+    path('change-password/', views.ChangePasswordView.as_view(), name='change_password'),
 ]
 
 

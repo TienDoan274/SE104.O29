@@ -2,16 +2,29 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 from .models import *
+import random
+import string
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.db import models
+from datetime import date
+
+def generate_random_username(length=10):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for _ in range(length))
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(label="Email", widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
-    name = forms.CharField(label="Username",max_length=100,widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Name'}))
+    role = forms.ChoiceField(choices=CustomUser.ROLE_CHOICES, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label="", widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+    gender = forms.ChoiceField(choices=CustomUser.GENDER_CHOICES, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
     class Meta:
-        model = User
-        fields = ('username', 'name', 'email', 'password1', 'password2')
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender', 'role', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
             super(SignUpForm, self).__init__(*args, **kwargs)
@@ -30,6 +43,72 @@ class SignUpForm(UserCreationForm):
             self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
             self.fields['password2'].label = ''
             self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'	
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender', 'role', 'start_date', 'address')
+
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        # Tùy chỉnh các thuộc tính của trường 'username'
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+        self.fields['username'].widget.attrs['placeholder'] = 'Username'
+        self.fields['username'].help_text = '<span class="form-text text-muted"><small>Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
+        
+    
+class EmployeeSignUpForm(UserCreationForm):
+    first_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    last_name = forms.CharField(max_length=30, required=True, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(label="",required=False,widget = forms.TextInput(attrs={'class':'form-control','placeholder':'Email Address'}))
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'})
+    )
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+    gender = forms.ChoiceField(choices=CustomUser.GENDER_CHOICES, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender', 'role', 'start_date', 'address', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(EmployeeSignUpForm, self).__init__(*args, **kwargs)
+
+        self.role = kwargs.pop('role', None)  # Lấy giá trị role từ kwargs
+
+        if self.role:
+            self.fields['role'].initial = self.role
+            
+        self.fields['username'] = forms.CharField(initial=generate_random_username())
+        self.fields['username'].widget.attrs['class'] = 'form-control'
+
+        self.fields['password1'] = forms.CharField(initial='employee123')
+        self.fields['password1'].widget.attrs['class'] = 'form-control'
+        self.fields['password1'].widget.attrs['placeholder'] = 'Password'
+        self.fields['password1'].label = 'Password'
+
+        self.fields['password2'] = forms.CharField(initial='employee123')
+        self.fields['password2'].widget.attrs['class'] = 'form-control'
+        self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
+        self.fields['password2'].label = 'Confirm Password'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_of_birth = cleaned_data.get('date_of_birth')
+        start_date = cleaned_data.get('start_date')
+
+        # Kiểm tra ngày sinh phải lớn hơn 18 tuổi
+        if date_of_birth:
+            age_limit = timezone.now().date() - timezone.timedelta(days=365 * 18)
+            if date_of_birth > age_limit:
+                self.add_error('date_of_birth', 'Bạn phải đủ 18 tuổi trở lên để đăng ký.')
+        
+        # Kiểm tra ngày vào làm phải sau ngày sinh
+        if date_of_birth and start_date:
+            if start_date <= date_of_birth:
+                self.add_error('start_date', 'Ngày vào làm phải sau ngày sinh.')
+
+        return cleaned_data
+    
 
 class FormThemBN(forms.ModelForm):
     hoten = forms.CharField(required=True, widget=forms.TextInput(attrs={"placeholder": "Họ tên", "class": "form-control",'id':'hoten'}), label="Họ tên")
@@ -99,3 +178,9 @@ class thietbiForm(forms.ModelForm):
 class ReportForm(forms.Form):
     month = forms.ChoiceField(choices=[(i, i) for i in range(1, 13)], label='Tháng')
     year = forms.ChoiceField(choices=[(i, i) for i in range(2020, 2031)], label='Năm')
+
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput())
+    new_password = forms.CharField(widget=forms.PasswordInput())
+    confirm_password = forms.CharField(widget=forms.PasswordInput())

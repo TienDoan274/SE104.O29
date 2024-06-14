@@ -1,10 +1,14 @@
 {%if user.is_authenticated %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+<script src="{% static 'JavaScript/dropdown.js' %}"></script>
 <div class="navbar">
     <div class="navbar-left">
       <a href="{% url 'home' %}"><img src="https://cdn-icons-png.flaticon.com/128/3209/3209134.png" alt="Canduceus"></a>
       {% comment %} <a href="#">Doctors</a> {% endcomment %}
       <a href="{% url 'chonNgaydskb' %}">DS khám bệnh</a>
       {% comment %} <a href="#">Equipments</a> {% endcomment %}
+      <a href="{% url 'employee_role_selection' %}">Employee List</a>
       <a href="{% url 'danhsachTBi' %}">Equipments</a>
       <a href="{% url 'thuoc' %}">Medicine</a>
       <a href="{% url 'dsBenhnhan' %}">DS bệnh nhân</a>
@@ -12,17 +16,18 @@
 
       <a href="{% url 'bao_cao_su_dung_thuoc' %}">Medical Report</a>
       <a href="{% url 'chonThangbaocao' %}">Report</a>
-      {% comment %} <a href="{% url 'hoadon' %}">Bills</a> {% endcomment %}
-      {% comment %} <a href="{% url 'medication_usage_report' %}">Medicine Report</a> {% endcomment %}
-      {% comment %} <a href="{% url 'medication_stock_list' %}">Medicine List</a> {% endcomment %}
-      {% comment %} <a href="{% url 'list_patient' %}">List patient</a> {% endcomment %}
-      {% comment %} <a href="{% url 'medical_report' %}">Reports</a> {% endcomment %}
+    
 
     </div>
     <div class="navbar-right">
-      <a href="{% url 'logout' %}" class="logout">Logout</a>
-      <div class="search">
-        <a href="#"><img src="https://cdn-icons-png.flaticon.com/128/149/149852.png" alt=""></a>
+      
+      <div class="dropdown">
+        <img src="{% if user.gender == 'male' %}{% static 'images/img_avatar_male.png' %}{% else %}{% static 'images/img_avatar_female.png' %}{% endif %}" alt="Avatar" class="avatar">
+        <div class="dropdown-content">
+          <a href="{% url 'view_user_info' %}">Profile</a>
+          <a href="{% url 'change_password' %}">Change Password</a>
+          <a href="{% url 'logout' %}">Logout</a>
+        </div>
       </div>
     </div>
 </div>
