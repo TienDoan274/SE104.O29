@@ -15,10 +15,10 @@ from django.db.models.functions import TruncDay
 from datetime import datetime
 from .decorators import role_required
 
-
-default_values = DefaultValues.objects.get(id= 1)
-
-
+try:
+    default_values = DefaultValues.objects.get(id= 1)
+except:
+    default_values = None
 def home(request):
 	if request.method == 'POST':
 		username = request.POST['username']
