@@ -16,6 +16,8 @@ urlpatterns = [
     path("add_phieukb/<int:id>/",views.add_phieukb, name ="add_phieukb"),
     path("xoa_phieukb/<int:id>/",views.xoa_phieukb, name ="xoa_phieukb"),
     path("sua_phieukb/<int:id_phieukb>/",views.sua_phieukb, name ="sua_phieukb"),
+    path("phieukb/<int:id>/pdf/", views.generate_pdf, name="generate_pdf"),
+
 
     path("add_thuocphieukb/<int:id>/",views.add_thuocphieukb, name ="add_thuocphieukb"),
     path('xoa_pkbthuoc/<int:id_pkbthuoc>/<int:id_benhnhan>', views.xoa_pkbthuoc, name='xoa_pkbthuoc'),
@@ -41,9 +43,11 @@ urlpatterns = [
 
     path('bao_cao_su_dung_thuoc/', views.bao_cao_su_dung_thuoc, name='bao_cao_su_dung_thuoc'),
     path('bao_cao_su_dung_thuoc_report/<int:month>/<int:year>/', views.bao_cao_su_dung_thuoc_report, name='bao_cao_su_dung_thuoc_report'),
+    path('bao_cao_su_dung_thuoc_report/<int:month>/<int:year>/pdf/', views.bao_cao_su_dung_thuoc_report_pdf, name='bao_cao_su_dung_thuoc_report_pdf'),
     
     path('chonThangbaocao/', views.chonThangbaocao, name='chonThangbaocao'),
     path("report_revenue/<int:year>/<int:month>/",views.report_revenue_by_month, name = "revenue_report"),
+    path('report_revenue/<int:year>/<int:month>/pdf/', views.report_revenue_by_month_pdf, name='report_revenue_by_month_pdf'),
 
     path('danhsachTBi/', views.danhsachTBi, name='danhsachTBi'),
     path('them_thietbi/', views.themTBi_new, name='them_thietbi'),

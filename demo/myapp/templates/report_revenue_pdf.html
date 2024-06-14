@@ -1,12 +1,8 @@
-{% extends 'base.html' %}
-{% load bootstrap_filters %}
-
-{% block title %} Them sua thiet bi y te {% endblock %}
-
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Báo Cáo Doanh Thu Theo Tháng</title>
+    <title>Monthly Revenue Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -43,20 +39,18 @@
     </style>
 </head>
 <body>
-    <h1>Báo Cáo Doanh Thu Theo Tháng</h1>
+    <h1>Monthly Revenue Report</h1>
     <table>
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Ngày</th>
-                <th>Số Bệnh Nhân</th>
-                <th>Doanh Thu</th>
+                <th>Day</th>
+                <th>Number of Patients</th>
+                <th>Total Revenue</th>
             </tr>
         </thead>
         <tbody>
             {% for data in revenue_data %}
             <tr>
-                <td>{{ forloop.counter }}</td>
                 <td>{{ data.day }}</td>
                 <td>{{ data.patient_count }}</td>
                 <td>{{ data.total_revenue }}</td>
@@ -64,7 +58,5 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="{% url 'chonThangbaocao' %}" class="btn btn-primary" role="button">Back</a>
-    <a href="{% url 'report_revenue_by_month_pdf' year=year month=month %}" class="btn btn-primary" role="button">Download PDF</a>
 </body>
-{% endblock %}
+</html>

@@ -14,7 +14,13 @@ from django.db.models import Sum, Count
 from django.db.models.functions import TruncDay
 from datetime import datetime
 from .decorators import role_required
-
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfbase import pdfmetrics
+import os
+from reportlab.lib.pagesizes import letter
 try:
     default_values = DefaultValues.objects.get(id= 1)
 except:
@@ -567,16 +573,156 @@ def report_revenue_by_month(request, year, month):
     # Filter the invoices by the start and end dates
     invoices = Hoadon.objects.filter(benhnhan__ngaykham__range=(start_date, end_date)).select_related('benhnhan')
 
-
     # Calculate the revenue by day
-    revenue_by_day = invoices.annotate(day=TruncDay('benhnhan__ngaykham')).values('day').annotate(total_revenue=Sum('tienthuoc')+Sum('tienkham'),patient_count=Count('benhnhan')).order_by('day')
-    
+    revenue_by_day = invoices.annotate(day=TruncDay('benhnhan__ngaykham')).values('day').annotate(
+        total_revenue=Sum('tienthuoc') + Sum('tienkham'),
+        patient_count=Count('benhnhan')
+    ).order_by('day')
+
     revenue_data = []
     for revenue in revenue_by_day:
         day = revenue['day'].strftime('%Y-%m-%d')
         total_revenue = revenue['total_revenue']
         patient_count = revenue['patient_count']
         revenue_data.append({'day': day, 'total_revenue': total_revenue, 'patient_count': patient_count})
+
+    context = {
+        'revenue_data': revenue_data,
+        'month': month,
+        'year': year,
+    }
+    return render(request, 'report_revenue.html', context)
     
-    
-    return render(request, 'report_revenue.html', {'revenue_data': revenue_data})
+def report_revenue_by_month_pdf(request, year, month):
+    start_date = datetime(year, month, 1)
+    if month == 12:
+        end_date = datetime(year + 1, 1, 1)
+    else:
+        end_date = datetime(year, month + 1, 1)
+
+    invoices = Hoadon.objects.filter(benhnhan__ngaykham__range=(start_date, end_date)).select_related('benhnhan')
+
+    revenue_by_day = invoices.annotate(day=TruncDay('benhnhan__ngaykham')).values('day').annotate(
+        total_revenue=Sum('tienthuoc') + Sum('tienkham'),
+        patient_count=Count('benhnhan')
+    ).order_by('day')
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="report_revenue_{year}_{month}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')
+    pdfmetrics.registerFont(TTFont('DejaVu', font_path))
+    p.setFont('DejaVu', 12)
+
+    p.drawString(100, height - 50, f"Báo Cáo Doanh Thu - Tháng {month}/{year}")
+
+    y = height - 100
+    p.drawString(50, y, "STT")
+    p.drawString(150, y, "Ngày")
+    p.drawString(300, y, "Số Bệnh Nhân")
+    p.drawString(500, y, "Doanh Thu")
+    y -= 20
+
+    for idx, revenue in enumerate(revenue_by_day, start=1):
+        p.drawString(50, y, str(idx))
+        p.drawString(150, y, revenue['day'].strftime('%Y-%m-%d'))
+        p.drawString(300, y, str(revenue['patient_count']))
+        p.drawString(500, y, str(revenue['total_revenue']))
+        y -= 20
+        if y < 50:
+            p.showPage()
+            p.setFont('DejaVu', 12)
+            y = height - 50
+
+    p.showPage()
+    p.save()
+
+    return response
+
+def generate_pdf(request, id):
+    target_BN = Benhnhan.objects.get(id=id)
+    try:
+        phieukb = PhieuKB.objects.get(benhnhan=target_BN)
+    except PhieuKB.DoesNotExist:
+        phieukb = None
+
+    pkbthuocs = PKBthuoc.objects.filter(phieukb=phieukb) if phieukb else None
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="phieukb_{id}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # Path to your font file
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')
+    pdfmetrics.registerFont(TTFont('DejaVu', font_path))
+    p.setFont('DejaVu', 12)
+
+    p.drawString(100, height - 50, f"Hồ sơ y tế cho {target_BN.hoten}")
+
+    if phieukb:
+        p.drawString(100, height - 100, f"Ngày khám: {phieukb.benhnhan.ngaykham}")
+        p.drawString(100, height - 120, f"Triệu chứng: {phieukb.trieuchung}")
+        p.drawString(100, height - 140, f"Dự đoán loại bệnh: {phieukb.dudoan}")
+
+        if pkbthuocs:
+            y = height - 160
+            p.drawString(100, y, "Thuốc:")
+            y -= 20
+            for idx, pkbthuoc in enumerate(pkbthuocs, start=1):
+                p.drawString(100, y, f"{idx}. {pkbthuoc.thuoc.tenThuoc} - {pkbthuoc.donvi} - {pkbthuoc.soluong} - {pkbthuoc.cachdung}")
+                y -= 20
+                if y < 50:
+                    p.showPage()
+                    p.setFont('DejaVu', 12)
+                    y = height - 50
+
+    p.showPage()
+    p.save()
+
+    return response
+
+def bao_cao_su_dung_thuoc_report_pdf(request, month, year):
+    thuoc_data = PKBthuoc.objects.filter(
+        phieukb__benhnhan__ngaykham__month=month,
+        phieukb__benhnhan__ngaykham__year=year
+    ).values('thuoc__tenThuoc', 'donvi').annotate(
+        tong_soluong=Sum('soluong'),
+    )
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="bao_cao_su_dung_thuoc_{month}_{year}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')
+    pdfmetrics.registerFont(TTFont('DejaVu', font_path))
+    p.setFont('DejaVu', 12)
+
+    p.drawString(100, height - 50, f"Báo Cáo Sử Dụng Thuốc - Tháng {month}/{year}")
+
+    y = height - 100
+    p.drawString(100, y, "Thuốc")
+    p.drawString(300, y, "Đơn Vị Tính")
+    p.drawString(500, y, "Số Lượng")
+    y -= 20
+
+    for item in thuoc_data:
+        p.drawString(100, y, item['thuoc__tenThuoc'])
+        p.drawString(300, y, item['donvi'])
+        p.drawString(500, y, str(item['tong_soluong']))
+        y -= 20
+        if y < 50:
+            p.showPage()
+            p.setFont('DejaVu', 12)
+            y = height - 50
+
+    p.showPage()
+    p.save()
+
+    return response

@@ -23,5 +23,6 @@
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'bao_cao_su_dung_thuoc' %}" class="btn btn-primary" role="button">Back</a>
+<a href="{% url 'bao_cao_su_dung_thuoc_report' month year %}" class="btn btn-primary" role="button">Back</a>
+<a href="{% url 'bao_cao_su_dung_thuoc_report_pdf' month year %}" class="btn btn-primary" role="button">Download PDF</a>
 {% endblock %}

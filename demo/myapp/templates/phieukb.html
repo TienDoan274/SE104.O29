@@ -57,6 +57,7 @@
     </tbody>
   </table>
 <a href="{% url 'add_thuocphieukb' idBenhnhan %}" class="btn btn-primary" role="button">Thêm thuốc</a>
+<a href="{% url 'generate_pdf' idBenhnhan %}" class="btn btn-primary" role="button">Download PDF</a>
 <a href="{% url 'xoa_phieukb' phieukb.id %}" class="btn btn-primary" role="button">Xóa</a>
 
 {% else %}
