@@ -9,7 +9,7 @@ urlpatterns = [
     path('update_BN/<int:id>/', views.update_BN, name='update_BN'),
     path('delete_BN/<int:id>/', views.delete_BN, name='delete_BN'),
 
-
+    path("phieukb/<int:id>/pdf/", views.generate_pdf, name="generate_pdf"),
     path("phieukb/<int:id>/",views.phieukb, name ="phieukb"),
     path("add_phieukb/<int:id>/",views.add_phieukb, name ="add_phieukb"),
     path("add_thuocphieukb/<int:id>/",views.add_thuocphieukb, name ="add_thuocphieukb"),
@@ -28,10 +28,10 @@ urlpatterns = [
     # path('all_patients/', views.all_patients, name='all_patients'),
     path('bao_cao_su_dung_thuoc/', views.bao_cao_su_dung_thuoc, name='bao_cao_su_dung_thuoc'),
     path('bao_cao_su_dung_thuoc_report/<int:month>/<int:year>/', views.bao_cao_su_dung_thuoc_report, name='bao_cao_su_dung_thuoc_report'),
-
+    path('bao_cao_su_dung_thuoc_report/<int:month>/<int:year>/pdf/', views.bao_cao_su_dung_thuoc_report_pdf, name='bao_cao_su_dung_thuoc_report_pdf'),
     path('chonThangbaocao/', views.chonThangbaocao, name='chonThangbaocao'),
     path("report_revenue/<int:year>/<int:month>/",views.report_revenue_by_month, name = "revenue_report"),
-
+    path('report_revenue/<int:year>/<int:month>/pdf/', views.report_revenue_by_month_pdf, name='report_revenue_by_month_pdf'),
     path('danhsachTBi/', views.danhsachTBi, name='danhsachTBi'),
     path('them_thietbi/', views.themTBi_new, name='them_thietbi'),
     path('sua_thietbi/<int:pk>/', views.suaTBi, name='sua_thietbi'),

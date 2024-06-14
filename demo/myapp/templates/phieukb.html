@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{%block title%}Medical Record{%endblock%}
+{% block title %}Medical Record{% endblock %}
 {% block content %}
 
 {% if phieukb %}
@@ -10,18 +10,15 @@
         <th scope="col">Ngày khám</th>
         <th scope="col">Triệu chứng</th>
         <th scope="col">Dự đoán loại bệnh</th>
-
       </tr>
     </thead>
     <tbody>
-      
-      </tr>
+      <tr>
         <td>{{ phieukb.benhnhan.hoten }}</td>
         <td>{{ phieukb.benhnhan.ngaykham }}</td>
         <td>{{ phieukb.trieuchung }}</td>
         <td>{{ phieukb.dudoan }}</td>
       </tr>
-    
       {% if pkbthuocs %}
       <thead class="table-dark">
         <tr>
@@ -30,31 +27,29 @@
           <th scope="col">Đơn vị</th>
           <th scope="col">Số lượng</th>
           <th scope="col">Cách dùng</th>
-          {% comment %} <th scope="col">Sửa</th> {% endcomment %}
-
         </tr>
       </thead>
-      {% for pkbthuoc in pkbthuocs  %}
+      {% for pkbthuoc in pkbthuocs %}
       <tbody>
         <tr>
-          <td>{{forloop.counter}}</td>
+          <td>{{ forloop.counter }}</td>
           <td>{{ pkbthuoc.thuoc.tenThuoc }}</td>
           <td>{{ pkbthuoc.donvi }}</td>
           <td>{{ pkbthuoc.soluong }}</td>
           <td>{{ pkbthuoc.cachdung }}</td>
           <td><a href="{% url 'xoa_pkbthuoc' pkbthuoc.id phieukb.benhnhan.id %}" class="btn btn-primary">Xóa</a></td>
+        </tr>
       </tbody>
       {% endfor %}
       {% endif %}
-
     </tbody>
   </table>
-<a href="{% url 'add_thuocphieukb' idBenhnhan %}" class="btn btn-primary" role="button">Thêm thuốc</a>
-
+  <a href="{% url 'add_thuocphieukb' idBenhnhan %}" class="btn btn-primary" role="button">Thêm thuốc</a>
+  <a href="{% url 'generate_pdf' idBenhnhan %}" class="btn btn-primary" role="button">Download PDF</a>
 {% else %}
   <h1>Bạn chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
   <a href="{% url 'add_phieukb' idBenhnhan %}" class="btn btn-primary" role="button">Tạo</a>
 {% endif %}
 <a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-primary" role="button">Quay về</a>
 
-{%endblock%}
+{% endblock %}

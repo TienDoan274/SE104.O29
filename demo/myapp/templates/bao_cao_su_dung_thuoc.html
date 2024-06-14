@@ -9,7 +9,6 @@
             <th scope="col">Thuốc</th>
             <th scope="col">Đơn Vị Tính</th>
             <th scope="col">Số Lượng</th>
-            
         </tr>
     </thead>
     <tbody>
@@ -18,10 +17,10 @@
                 <td>{{ item.thuoc__tenThuoc }}</td>
                 <td>{{ item.donvi }}</td>
                 <td>{{ item.tong_soluong }}</td>
-                
             </tr>
         {% endfor %}
     </tbody>
 </table>
-<a href="{% url 'bao_cao_su_dung_thuoc' %}" class="btn btn-primary" role="button">Back</a>
+<a href="{% url 'bao_cao_su_dung_thuoc_report' month year %}" class="btn btn-primary" role="button">Back</a>
+<a href="{% url 'bao_cao_su_dung_thuoc_report_pdf' month year %}" class="btn btn-primary" role="button">Download PDF</a>
 {% endblock %}
