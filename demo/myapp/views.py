@@ -499,7 +499,7 @@ def bao_cao_su_dung_thuoc_report_pdf(request, month, year):
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
-    # Path to your font file
+    
     font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')
     pdfmetrics.registerFont(TTFont('DejaVu', font_path))
     p.setFont('DejaVu', 12)
@@ -582,7 +582,7 @@ def report_revenue_by_month_pdf(request, year, month):
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
-    # Path to your font file
+    
     font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')
     pdfmetrics.registerFont(TTFont('DejaVu', font_path))
     p.setFont('DejaVu', 12)
