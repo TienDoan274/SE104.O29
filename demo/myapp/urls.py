@@ -26,7 +26,7 @@ urlpatterns = [
         
     path("thuoc/",views.thuoc, name ="thuoc"),
     path("them_loai_thuoc/",views.them_loai_thuoc, name ="them_loai_thuoc"),
-    path('update_thuoc/', views.update_thuoc, name='update_thuoc'),
+    path('thuoc/update_thuoc/', views.update_thuoc, name='update_thuoc'),
     path('delete_thuoc/<int:id>/', views.delete_thuoc, name='delete_thuoc'),
 
 
