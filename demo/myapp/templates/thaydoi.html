@@ -15,8 +15,12 @@
             <tr>
                 <td>{{ default_values.max_patient }}</td>
                 {% load split_filter %}
-                <td>{{ default_values.loaibenh|split:","|first }}</td>
-                <td>{{ default_values.cachdung|split:","|first }}</td>
+                <td>{{ default_values.loaibenh|split:","|first }} 
+                    <button onclick="xoaloaibenh('{{ default_values.loaibenh|split:","|first }}')">X</button>
+                </td>
+                <td>{{ default_values.cachdung|split:","|first }}
+                    <button onclick = "xoacachdung('{{ default_values.cachdung|split:","|first }}')">X</button>
+                </td>
                 <td>{{ default_values.tienkham }}</td>
             </tr>
             
@@ -47,16 +51,16 @@
     var i = 1
     var j = 1
     while(i < loaibenhs.length && j < cachdungs.length){
-        body.innerHTML += `<tr><td></td><td>${loaibenhs[i] }</td><td>${cachdungs[j] }</td><td></td></tr>`
+        body.innerHTML += `<tr><td></td><td>${loaibenhs[i] }<button onclick = "xoaloaibenh('${loaibenhs[i] }')">X</button></td><td>${cachdungs[j] }<button onclick = "xoacachdung('${cachdungs[i] }')">X</button></td><td></td></tr>`
         i++
         j++
     }
     while(i < loaibenhs.length){
-        body.innerHTML += `<tr><td></td><td>${loaibenhs[i] }</td><td></td><td></td></tr>`
+        body.innerHTML += `<tr><td></td><td>${loaibenhs[i] }<button onclick = "xoaloaibenh('${loaibenhs[i] }')">X</button></td><td></td><td></td></tr>`
         i++
     }
     while(j < cachdungs.length){
-        body.innerHTML += `<tr><td></td><td></td><td>${cachdungs[j] }</td><td></td></tr>`
+        body.innerHTML += `<tr><td></td><td></td><td>${cachdungs[j] }<button onclick = "xoacachdung('${cachdungs[i] }')">X</button></td><td></td></tr>`
         j++
     }
     function themloaibenh(){
@@ -65,11 +69,47 @@
             <input type="text" name="loaibenh" placeholder="Loại bệnh">
             <input type="submit" value="Submit"></form>`
     }
+    function xoaloaibenh(value){
+        fetch('/xoaloaibenh/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ value: value })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response data
+        })
+        .catch(error => {
+            // Handle the error
+        });
+        location.reload();
+    }
     function themcachdung(){
         element = document.getElementById('themcachdung')
         element.innerHTML =`<form method="post" action="/themcachdung/">{% csrf_token %}
             <input type="text" name="cachdung" placeholder="Cách dùng">
             <input type="submit" value="Submit"></form>`
+    }
+    function xoacachdung(value){
+        fetch('/xoacachdung/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ value: value })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response data
+        })
+        .catch(error => {
+            // Handle the error
+        });
+        location.reload();
     }
     function updatetienkham(){
         element = document.getElementById('updatetienkham')

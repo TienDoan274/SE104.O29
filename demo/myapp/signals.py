@@ -23,7 +23,7 @@ def create_superuser(sender, **kwargs):
 def create_default_values(sender, **kwargs):
     DefaultValues.objects.get_or_create(
         max_patient=40,
-        cachdung='A, B, C, D',
-        loaibenh='A, B, C, D, E',
+        cachdung='A,B,C,D',
+        loaibenh='A,B,C,D,E',
         tienkham=30000
     )

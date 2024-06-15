@@ -38,7 +38,10 @@ urlpatterns = [
     path("thaydoi/",views.thaydoi, name ="thaydoi"),
     path('updatemaxpatient/', views.updatemaxpatient, name='updatemaxpatient'),
     path("themloaibenh/",views.themloaibenh, name ="themloaibenh"),
+    path("xoaloaibenh/",views.xoaloaibenh, name ="xoaloaibenh"),
     path("themcachdung/",views.themcachdung, name ="themcachdung"),
+    path("xoacachdung/",views.xoacachdung, name ="xoacachdung"),
+
     path('updatetienkham/', views.updatetienkham, name='updatetienkham'),
 
     path('bao_cao_su_dung_thuoc/', views.bao_cao_su_dung_thuoc, name='bao_cao_su_dung_thuoc'),

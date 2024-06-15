@@ -21,10 +21,12 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 import os
 from reportlab.lib.pagesizes import letter
-try:
-    default_values = DefaultValues.objects.get(id= 1)
-except:
-    default_values = None
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+default_values = DefaultValues.objects.get(id= 1)
+
 def home(request):
 	if request.method == 'POST':
 		username = request.POST['username']
@@ -492,12 +494,47 @@ def themloaibenh(request):
 
     return redirect(thaydoi)
 
+@csrf_exempt
+def xoaloaibenh(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        loaibenh = str(data.get('value'))
+        
+        text = default_values.loaibenh.split(',')
+        # try:
+        # except:
+        #     print('loaibenh:',loaibenh)
+        text.remove(loaibenh)
+
+        default_values.loaibenh = ','.join(text)
+        default_values.save()
+
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'invalid request'})
+
 def themcachdung(request):
     if request.method == 'POST':
         cachdung = request.POST['cachdung']
         default_values.cachdung = default_values.cachdung + ',' + str(cachdung)
         default_values.save()
     return redirect(thaydoi) 
+
+def xoacachdung(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        cachdung = str(data.get('value'))
+        text = default_values.cachdung.split(',')
+        try:
+            text.remove(cachdung)
+        except:
+            print(text)
+            print(cachdung)
+        default_values.cachdung = ','.join(text)
+        default_values.save()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'invalid request'})
 
 def updatetienkham(request):
     if request.method == 'POST':
