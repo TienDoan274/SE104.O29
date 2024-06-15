@@ -431,32 +431,75 @@ def chonNgaydskb(request):
     
     return render(request, 'chonNgaydskb.html')
 
-def hoadon(request,id):
+def hoadon(request, id):
     if request.user.is_authenticated:
-        target_BN = Benhnhan.objects.get(id = id)
+        target_BN = Benhnhan.objects.get(id=id)
         try:
-            phieukb = PhieuKB.objects.get(benhnhan = target_BN)
+            phieukb = PhieuKB.objects.get(benhnhan=target_BN)
         except:
             hoadon = None
             phieukb = None
         if phieukb:
             tienthuoc = 0
             try:
-                pkbthuocs = PKBthuoc.objects.filter(phieukb = phieukb)
+                pkbthuocs = PKBthuoc.objects.filter(phieukb=phieukb)
                 for pkbthuoc in pkbthuocs:
                     if pkbthuoc.donvi == 'vien':
-                        tienthuoc = tienthuoc + pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
+                        tienthuoc += pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
                     else:
-                        tienthuoc = tienthuoc + pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
+                        tienthuoc += pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
             finally:
-                hoadon,created = Hoadon.objects.update_or_create(
-                    benhnhan = target_BN,
-                    
-                    defaults={'tienthuoc':tienthuoc,'tienkham':default_values.tienkham}
+                hoadon, created = Hoadon.objects.update_or_create(
+                    benhnhan=target_BN,
+                    defaults={'tienthuoc': tienthuoc, 'tienkham': default_values.tienkham}
                 )
                 hoadon.save()
-                
-        return render(request, 'hoadon.html',{'hoadon':hoadon,'ngaykham':target_BN.ngaykham})
+
+        return render(request, 'hoadon.html', {'hoadon': hoadon, 'ngaykham': target_BN.ngaykham})
+def hoadon_pdf(request, id):
+    target_BN = Benhnhan.objects.get(id=id)
+    try:
+        phieukb = PhieuKB.objects.get(benhnhan=target_BN)
+    except:
+        hoadon = None
+        phieukb = None
+    if phieukb:
+        tienthuoc = 0
+        try:
+            pkbthuocs = PKBthuoc.objects.filter(phieukb=phieukb)
+            for pkbthuoc in pkbthuocs:
+                if pkbthuoc.donvi == 'vien':
+                    tienthuoc += pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
+                else:
+                    tienthuoc += pkbthuoc.soluong * pkbthuoc.thuoc.giatheovien
+        finally:
+            hoadon, created = Hoadon.objects.update_or_create(
+                benhnhan=target_BN,
+                defaults={'tienthuoc': tienthuoc, 'tienkham': default_values.tienkham}
+            )
+            hoadon.save()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="hoadon_{id}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # Path to the DejaVuSans font
+    font_path = os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')
+    pdfmetrics.registerFont(TTFont('DejaVu', font_path))
+    p.setFont('DejaVu', 12)
+    p.drawString(100, height - 50, f"Hồ sơ y tế cho {target_BN.hoten}")
+    # Add content to the PDF
+    p.drawString(100, height - 80, f"Họ tên: {hoadon.benhnhan.hoten}")
+    p.drawString(100, height - 100, f"Ngày khám: {hoadon.benhnhan.ngaykham}")
+    p.drawString(100, height - 120, f"Tiền khám: {hoadon.tienkham}")
+    p.drawString(100, height - 140, f"Tiền thuốc: {hoadon.tienthuoc}")
+    p.drawString(100, height - 160, f"Tổng tiền: {hoadon.tienthuoc+hoadon.tienkham}")
+    p.showPage()
+    p.save()
+    return response
+
 
 def add_bill(request,pk):
     patient = Benhnhan.objects.get(id = pk)

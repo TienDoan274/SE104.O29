@@ -25,7 +25,7 @@ urlpatterns = [
 
 
     path("hoadon/<int:id>/",views.hoadon, name ="hoadon"),
-        
+    path("hoadon/<int:id>/pdf/", views.hoadon_pdf, name="hoadon_pdf"),
     path("thuoc/",views.thuoc, name ="thuoc"),
     path("them_loai_thuoc/",views.them_loai_thuoc, name ="them_loai_thuoc"),
     path('thuoc/update_thuoc/', views.update_thuoc, name='update_thuoc'),
