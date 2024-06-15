@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{%block title%}Bills{%endblock%}
+{% block title %}Bills{% endblock %}
 {% block content %}
 {% if hoadon %}
 
@@ -13,19 +13,17 @@
       </tr>
     </thead>
     <tbody>
-      
       <tr>
           <td>{{ hoadon.benhnhan.hoten }}</td>
           <td>{{ hoadon.benhnhan.ngaykham }}</td>
           <td>{{ hoadon.tienkham }}</td>
           <td>{{ hoadon.tienthuoc }}</td>
-          
       </tr>  
     </tbody>
-  </table>
-  {% else %}
-  <h1>Chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
-  {% endif %}
-  <a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-primary" role="button">Back</a>
-
-{%endblock%}
+</table>
+<a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-primary" role="button">Back</a>
+<a href="{% url 'hoadon_pdf' hoadon.benhnhan.id %}" class="btn btn-primary" role="button">Download PDF</a>
+{% else %}
+<h1>Chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
+{% endif %}
+{% endblock %}
