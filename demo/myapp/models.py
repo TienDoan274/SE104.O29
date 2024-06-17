@@ -11,7 +11,7 @@ from datetime import datetime
 
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
-        ('receptionist', 'Lễ tân'),
+        ('nurse', 'Y tá'),
         ('doctor', 'Bác sĩ'),
         ('hr_manager', 'Quản lý nhân sự'),
         ('warehouse_manager', 'Quản lý kho'),
@@ -37,12 +37,10 @@ class Benhnhan(models.Model):
 	namsinh = models.IntegerField()
 	diachi = models.CharField(max_length = 100)
 	ngaykham = models.DateField(default='2024-01-01')
-
 class Hoadon(models.Model):
     benhnhan = models.OneToOneField(Benhnhan,on_delete=models.CASCADE)
     tienkham = models.IntegerField()
     tienthuoc = models.IntegerField()
-    
 class PhieuKB(models.Model):
     benhnhan = models.OneToOneField(Benhnhan,on_delete=models.CASCADE)
     trieuchung = models.CharField(max_length=100)

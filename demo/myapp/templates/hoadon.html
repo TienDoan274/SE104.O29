@@ -21,9 +21,10 @@
       </tr>  
     </tbody>
 </table>
-<a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-primary" role="button">Back</a>
 <a href="{% url 'hoadon_pdf' hoadon.benhnhan.id %}" class="btn btn-primary" role="button">Download PDF</a>
 {% else %}
 <h1>Chưa tạo phiếu khám bệnh cho bệnh nhân này</h1>
 {% endif %}
+<a href="{% url 'dsKhambenh' ngaykham %}" class="btn btn-primary" role="button">Back</a>
+
 {% endblock %}

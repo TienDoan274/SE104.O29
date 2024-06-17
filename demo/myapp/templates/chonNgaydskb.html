@@ -4,10 +4,10 @@
 {% block title %}List Patient{% endblock %}
 {% block content %}
 <form id="dateForm">
-    <label for="ngaykham">Ngày khám:</label>
+    <label for="ngaykham">Chọn ngày khám:</label>
     <input type="date" id="ngaykham" name="date" >
     <br><br>
-    <input type="submit" value="Gửi">
+    <input type="submit" class="btn btn-secondary" value="Gửi">
 </form>
 <script src="{% static 'JavaScript/chooseDate.js' %}"></script>
 {% endblock %}

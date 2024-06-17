@@ -24,8 +24,10 @@ from reportlab.lib.pagesizes import letter
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-
-default_values = DefaultValues.objects.get(id= 1)
+try:
+    default_values = DefaultValues.objects.get(id= 1)
+except:
+    default_values = None
 
 def home(request):
 	if request.method == 'POST':
@@ -121,17 +123,20 @@ def list_employees_by_role(request, role):
     role_display_name = dict(CustomUser.ROLE_CHOICES).get(role, 'Nhân viên')
     return render(request, 'employee_list/view_employee.html', {'employees': employees, 'role': role, 'role_display_name': role_display_name})
 
+@role_required('hr_manager')
 def edit_employee(request, pk, role):
     user = get_object_or_404(CustomUser, pk=pk)
     if request.method == 'POST':
         profile_form = ProfileForm(request.POST, instance=user)
         if profile_form.is_valid():
+            
             profile_form.save()
             return redirect('view_employees_by_role', role=role)
     else:
         profile_form = ProfileForm(instance=user)
     return render(request, 'employee_list/edit_employee.html', {'profile_form': profile_form})
 
+@role_required('hr_manager')
 def delete_employee(request, pk,role):
     user = get_object_or_404(CustomUser, pk=pk)
     if user == request.user:
@@ -156,12 +161,13 @@ def register_employee(request, role):
 
 
 # Kham benh
+@role_required('nurse','doctor')
 def dsKhambenh(request,ngaykham):
     if request.user.is_authenticated:
         # ngaykham = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
         benhnhans = Benhnhan.objects.filter(ngaykham = ngaykham)
         return render(request, 'dsKhambenh.html',{'benhnhans':benhnhans,'ngaykham':ngaykham})
-@role_required('receptionist','doctor')
+@role_required('nurse','doctor')
 def themBN(request,ngaykham):
     form = FormThemBN(request.POST or None)
     # form.initial['ngaykham'] = datetime.datetime.strptime(ngaykham,'%Y-%m-%d')
@@ -188,7 +194,7 @@ def themBN(request,ngaykham):
         messages.error(request, "You must be logged in to use that page!")
         return redirect('home')
     
-@role_required('receptionist','doctor')
+@role_required('nurse','doctor')
 def update_BN(request,id):
     if request.user.is_authenticated:
         target_BN = Benhnhan.objects.get(id = id)
@@ -212,7 +218,7 @@ def update_BN(request,id):
         messages.error(request, "You must be logged in to use that page!")
         return redirect('home')
     
-@role_required('receptionist','doctor')
+@role_required('nurse','doctor')
 def delete_BN(request,id):
     target_BN = Benhnhan.objects.get(id = id)
     ngaykham = target_BN.ngaykham
@@ -363,11 +369,13 @@ def sua_pkbthuoc(request,id_pkbthuoc,id_benhnhan):
         messages.success(request, "You must be logged in to use that page!")
         return redirect('home')
 
+@role_required('warehouse_manager')
 def thuoc(request):
     if request.user.is_authenticated:
         thoucs = Thuoc.objects.all()
         return render(request, 'thuoc.html',{'thuocs':thoucs})
 
+@role_required('warehouse_manager')
 def them_loai_thuoc(request):
     if request.user.is_authenticated:
         thuocs = Thuoc.objects.all()
@@ -393,6 +401,7 @@ def them_loai_thuoc(request):
                 return redirect('thuoc')
         return render(request, 'them_loai_thuoc.html',{'form':form})
 
+@role_required('warehouse_manager')
 def update_thuoc(request):
     if request.method == "POST":
         thuoc_id = request.POST.get("thuoc_id")
@@ -409,10 +418,18 @@ def update_thuoc(request):
     return JsonResponse({"status": "error", "message": "Invalid request"})
 
 @role_required('warehouse_manager')
+def delete_thuoc(request,id):
+    thuoc = Thuoc.objects.get(id = id)
+    thuoc.delete()
+    return redirect('thuoc')
+
+
+@role_required('warehouse_manager')
 def danhsachTBi(request):
     devices = thietbiYte.objects.all()
     return render(request, 'danhsachTBi.html', {'devices': devices})
 
+@role_required('warehouse_manager')
 def themTBi_new(request):
     if request.method == 'POST':
         form = thietbiForm(request.POST)
@@ -422,10 +439,7 @@ def themTBi_new(request):
     else:
         form = thietbiForm()
     return render(request, 'them_suaTbi.html', {'form': form, 'title': 'Nhập thiết bị y tế'})
-def delete_thuoc(request,id):
-    thuoc = Thuoc.objects.get(id = id)
-    thuoc.delete()
-    return redirect('thuoc')
+
 
 def chonNgaydskb(request):
     
@@ -520,11 +534,12 @@ def add_bill(request,pk):
         return redirect('hoadon',pk=1)	
 
        
-    
+@role_required('nurse','doctor')
 def dsBenhnhan(request):
     phieukbs = PhieuKB.objects.all()
     return render(request, 'dsBenhnhan.html',{'phieukbs':phieukbs})
 
+@role_required('')
 def thaydoi(request):
     
     return render(request, 'thaydoi.html',{'default_values':default_values})
