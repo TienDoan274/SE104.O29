@@ -3,8 +3,10 @@
 {% block content %}
 <div class="col-md-6 offset-md-3">
     <h1>Danh sách bệnh nhân</h1>
+    <input type="text" id="search-input" onkeyup="searchPatients()" placeholder="Nhập họ tên bệnh nhân">
+    
     {% if phieukbs %}
-    <table class="table table-striped table-hover table-bordered table-light">
+    <table id='patient-table' class="table table-striped table-hover table-bordered table-light">
         <thead>
           <tr>
             <th scope="col">STT</th>
@@ -30,4 +32,24 @@
     </table>
     {% endif %}
 </div>
+<script>
+      function searchPatients() {
+        var input = document.getElementById("search-input");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("patient-table");
+        var rows = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+          var name = rows[i].getElementsByTagName("td")[1];
+          if (name) {
+            var textValue = name.textContent || name.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+              rows[i].style.display = "";
+            } else {
+              rows[i].style.display = "none";
+            }
+          }
+        }
+      }
+    </script>
 {%endblock%}

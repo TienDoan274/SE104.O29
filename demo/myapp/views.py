@@ -24,8 +24,10 @@ from reportlab.lib.pagesizes import letter
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-
-default_values = DefaultValues.objects.get(id= 1)
+try:
+    default_values = DefaultValues.objects.get(id= 1)
+except:
+    default_values = None
 
 def home(request):
 	if request.method == 'POST':

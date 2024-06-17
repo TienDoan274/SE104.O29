@@ -75,14 +75,16 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hospitalDB',
-        'USER': 'root',
-        'PASSWORD': 'password123',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': 'hospitaldb',
+        'USER': 'admin',
+        'PASSWORD': 'password',
+        'HOST': 'db',  # Use 'db' as default from .env
+        'PORT': '3306',  # Use '3306' as default from .env
     }
 }
 

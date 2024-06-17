@@ -1,0 +1,6 @@
+django
+mysql-connector-python
+mysqlclient
+mysql
+reportlab
+django-crispy-forms
