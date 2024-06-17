@@ -66,6 +66,7 @@ class EmployeeSignUpForm(UserCreationForm):
     )
     start_date = forms.DateField(widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}))
     gender = forms.ChoiceField(choices=CustomUser.GENDER_CHOICES, required=True, widget=forms.Select(attrs={'class': 'form-control'}))
+
     class Meta:
         model = CustomUser
         fields = ('username', 'first_name', 'last_name', 'email', 'date_of_birth', 'gender', 'role', 'start_date', 'address', 'password1', 'password2')

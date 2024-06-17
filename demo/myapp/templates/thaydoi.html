@@ -120,7 +120,7 @@
     function updatemaxpatient(){
         element = document.getElementById('updatemaxpatient')
         element.innerHTML=`<form method="post" action="/updatemaxpatient/">{% csrf_token %}
-            <input type="number" name="updatemaxpatient" placeholder="Số bệnh nhân tối đa">
+            <input type="number" name="updatemaxpatient" placeholder="Số bệnh nhân tối đa" min="1">
             <input type="submit" value="Submit"></form>`
     }
 </script>
