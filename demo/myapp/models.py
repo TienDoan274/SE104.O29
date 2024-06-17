@@ -64,20 +64,14 @@ class DefaultValues(models.Model):
     max_patient = models.IntegerField(default=40)
     cachdung = models.CharField(max_length = 500,default='A B C D')
     loaibenh = models.CharField(max_length = 500,default='A B C D E')
-    tienkham = models.IntegerField(default=30000)
+    tienkham = models.IntegerField(default=30000) 
     
 class thietbiYte(models.Model):
-    SUPPLIER_CHOICES = [
-        ('Supplier A', 'Supplier A'),
-        ('Supplier B', 'Supplier B'),
-        ('Supplier C', 'Supplier C'),
-        ('Supplier D', 'Supplier D'),
-        ('Supplier E', 'Supplier E'),
-    ]
+    
 
     name = models.CharField(max_length=200)
     quantity = models.IntegerField()
-    supplier = models.CharField(max_length=200, choices=SUPPLIER_CHOICES)
+    supplier = models.CharField(max_length=200)
     import_date = models.DateField()
     price = models.IntegerField()
     purpose = models.TextField()
